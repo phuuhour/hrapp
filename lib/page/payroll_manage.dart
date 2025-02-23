@@ -1,12 +1,10 @@
 import 'package:boxicons/boxicons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/page/addnew_work.dart';
 import 'package:hr/page/formadjustsalary.dart';
 import 'package:hr/page/payrollbyemp.dart';
 import 'package:hr/page/payrollbywork.dart';
 import 'package:hr/widget/customListTIle.dart';
-import 'package:hr/widget/customTextField.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
