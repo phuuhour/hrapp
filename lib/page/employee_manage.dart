@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hr/page/addnew_emp.dart';
 import 'package:hr/page/detail_emp.dart';
-import 'package:hr/page/work_manage.dart';
 import 'package:hr/widget/customListTIle.dart';
 import 'package:hr/widget/customTextField.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -17,6 +16,14 @@ class EmployeeManage extends StatelessWidget {
   Widget build(BuildContext context) {
     initializeDateFormatting('km', null);
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.grey),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text('គ្រប់គ្រងបុគ្គលិកទាំងអស់', style: TextStyle(fontSize: 18)),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -72,25 +79,6 @@ class EmployeeManage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => WorkManage(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'មើលការងារនិងតួនាទី',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Colors.white,
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                       Column(
@@ -109,16 +97,11 @@ class EmployeeManage extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                builder:
-                                    (context) => SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                          0.942,
-                                      child: AddnewEmp(),
-                                    ),
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => AddnewEmp(),
+                                ),
                               );
                             },
                             child: Text(

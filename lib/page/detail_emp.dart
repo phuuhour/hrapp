@@ -1,9 +1,5 @@
 import 'package:boxicons/boxicons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/page/employee_manage.dart';
-import 'package:hr/page/work_manage.dart';
-import 'package:hr/screen/loginScreen.dart';
 import 'package:hr/widget/customButton.dart' as btn;
 import 'package:hr/widget/customListTIle.dart';
 import 'package:hr/widget/showdialog.dart';
@@ -14,9 +10,26 @@ class DetailEmp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: false,
+        backgroundColor: Colors.blue,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Boxicons.bx_x, color: Colors.white, size: 30),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -43,14 +56,7 @@ class DetailEmp extends StatelessWidget {
                       SizedBox(height: 2),
                       GestureDetector(
                         child: Text('Network Engineer'),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => LoginScreen(),
-                            ),
-                          );
-                        },
+                        onTap: () {},
                       ),
                     ],
                   ),
@@ -64,24 +70,14 @@ class DetailEmp extends StatelessWidget {
                 icon: Boxicons.bxs_phone,
                 title: "លេខទូរស័ព្ទ",
                 subtitle: "014789632",
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(builder: (context) => EmployeeManage()),
-                  );
-                },
+                onPressed: () {},
               ),
               Divider(indent: 67, height: 0, thickness: 0.6),
               CustomListTile(
                 icon: Boxicons.bxs_shopping_bag,
                 title: "ប្រភេទការងារ និងមុខតំណែង",
                 subtitle: "Network Engineer, Manager",
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(builder: (context) => WorkManage()),
-                  );
-                },
+                onPressed: () {},
               ),
               Divider(indent: 67, height: 0, thickness: 0.6),
               CustomListTile(

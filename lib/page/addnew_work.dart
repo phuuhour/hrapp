@@ -130,7 +130,7 @@ class _AddNewWorkState extends State<AddNewWork> {
 
                 controller: notesController,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 60),
               CustomButton(
                 text: "បញ្ជូន",
                 isLoading: isLoading,

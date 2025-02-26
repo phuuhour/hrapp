@@ -1,7 +1,6 @@
 import 'package:boxicons/boxicons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/page/detail_emp.dart';
 import 'package:hr/page/detail_work.dart';
 import 'package:hr/widget/customListTIle.dart';
 import 'package:hr/widget/showdialog.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hr/page/addnew_work.dart';
 import 'package:hr/page/detail_work.dart';
-import 'package:hr/page/employee_manage.dart';
+import 'package:hr/page/formadjustsalary.dart';
 import 'package:hr/widget/customListTIle.dart';
 import 'package:hr/widget/customTextField.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -17,6 +17,14 @@ class WorkManage extends StatelessWidget {
   Widget build(BuildContext context) {
     initializeDateFormatting('km', null);
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.grey),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text('ប្រភេទការងារ និងមុខតំណែង', style: TextStyle(fontSize: 18)),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -72,25 +80,6 @@ class WorkManage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => EmployeeManage(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'មើលបុគ្គលិក',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Colors.white,
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                       Column(
@@ -109,16 +98,11 @@ class WorkManage extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                builder:
-                                    (context) => SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                          0.942,
-                                      child: AddNewWork(),
-                                    ),
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => AddNewWork(),
+                                ),
                               );
                             },
                             child: Text(
@@ -147,9 +131,14 @@ class WorkManage extends StatelessWidget {
                   title: 'Network Engineer',
                   subtitle: '10-02-2017',
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(builder: (context) => DetailWork()),
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder:
+                          (context) => SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.942,
+                            child: DetailWork(),
+                          ),
                     );
                   },
                 ),

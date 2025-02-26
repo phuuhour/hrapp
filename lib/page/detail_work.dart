@@ -1,8 +1,6 @@
 import 'package:boxicons/boxicons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/page/employee_manage.dart';
-import 'package:hr/page/work_manage.dart';
 import 'package:hr/screen/loginScreen.dart';
 import 'package:hr/widget/customListTIle.dart';
 
@@ -12,6 +10,23 @@ class DetailWork extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: false,
+        backgroundColor: Colors.blue,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Boxicons.bx_x, color: Colors.white, size: 30),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),

@@ -36,6 +36,14 @@ class PayrollManage extends StatelessWidget {
       'km',
     ).format(lastDayOfCurrentMonth);
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.grey),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text('ចំណាយលើប្រាក់ខែ', style: TextStyle(fontSize: 18)),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(

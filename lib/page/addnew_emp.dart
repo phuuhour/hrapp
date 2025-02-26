@@ -42,7 +42,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -207,7 +207,6 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   },
                   isPrimary: true,
                 ),
-                SizedBox(height: 60),
               ],
             ),
           ),

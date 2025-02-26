@@ -1,4 +1,3 @@
-import 'package:boxicons/boxicons.dart';
 import 'package:flutter/material.dart';
 import 'package:hr/widget/customListTIle.dart';
 
@@ -16,15 +15,18 @@ class NotificationPage extends StatelessWidget {
         title: Text('សាជូនដំណឹង', style: TextStyle(fontSize: 18)),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          CustomListTile(
-            icon: Icons.notifications,
-            title: 'ថ្ងៃឈប់សម្រាក',
-            subtitle: 'ចំនួន ៣ថ្ងៃ ចាប់ពីទី ២៨ ខែដល់ ៩ខែ៣',
-            onPressed: () {},
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 13),
+        child: Column(
+          children: [
+            CustomListTile(
+              icon: Icons.notifications,
+              title: 'ថ្ងៃឈប់សម្រាក',
+              subtitle: 'ចំនួន ៣ថ្ងៃ ចាប់ពីទី ២៨ ខែដល់ ៩ខែ៣',
+              onPressed: () {},
+            ),
+          ],
+        ),
       ),
     );
   }
