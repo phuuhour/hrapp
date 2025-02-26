@@ -70,9 +70,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   label: 'ភេទ',
                   items: ['ប្រុស', 'ស្រី', 'ផ្សេងៗ'],
                   icon: Boxicons.bx_user_circle,
-                  onChanged: (String? newValue) {
-                    print("Selected Gender: $newValue");
-                  },
+                  onChanged: (String? newValue) {},
                 ),
 
                 SizedBox(height: 10),
@@ -80,9 +78,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   label: 'ស្ថានភាពគ្រួសារ',
                   items: ['នៅលីវ', 'រៀបការហើយ', 'លែងលះ'],
                   icon: Boxicons.bx_heart,
-                  onChanged: (String? newValue) {
-                    print("Selected Gender: $newValue");
-                  },
+                  onChanged: (String? newValue) {},
                 ),
                 SizedBox(height: 10),
                 CustomTextField(
@@ -136,9 +132,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   label: 'ប្រភេទការងារ',
                   items: ['ពេញម៉ោង', 'ក្រៅម៉ោង', 'កិច្ចសន្យា'],
                   icon: Boxicons.bx_category,
-                  onChanged: (String? newValue) {
-                    print("Selected Gender: $newValue");
-                  },
+                  onChanged: (String? newValue) {},
                 ),
                 SizedBox(height: 10),
                 CustomTextField(

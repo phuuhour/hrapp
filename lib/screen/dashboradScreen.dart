@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hr/page/employee_manage.dart';
 import 'package:hr/page/myprofile.dart';
+import 'package:hr/page/notification.dart';
 import 'package:hr/page/payroll_manage.dart';
 import 'package:hr/page/work_manage.dart';
-import 'package:hr/screen/loginScreen.dart';
 import 'package:hr/widget/customListTIle.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -25,7 +25,7 @@ class DashboardScreen extends StatelessWidget {
                   CircleAvatar(
                     radius: 30,
                     backgroundImage: NetworkImage(
-                      'https://scontent.fpnh11-2.fna.fbcdn.net/v/t39.30808-6/459855964_1218722905839890_5711816434029203503_n.jpg?stp=cp6_dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHAYFN8L4rZL0ODqjswM_GCq2e-_u9bkfurZ77-71uR-6vzBHZwfS6n1AKUgs0hsbkrXPhkqwjf29G2_Fmfc8ui&_nc_ohc=m1aESqyAjAAQ7kNvgEMHe0c&_nc_oc=AdgcBFJzjDSE6gwcrURSnhVKVfsR_rH40BSn4fw6lxQ_qTHr2SgdLwjoo-GUDFFWeo4&_nc_zt=23&_nc_ht=scontent.fpnh11-2.fna&_nc_gid=AvMORiPn_cwj_RF3f31DIwn&oh=00_AYDu0D0ZRIiDTjhYJn0g2yHDuqmnzWczCcSAQGJwCH8VEQ&oe=67BB50F6',
+                      'https://i.pinimg.com/736x/b2/1e/d9/b21ed98a5eb1d86a1dd633eb2ef59522.jpg',
                     ),
                   ),
                   const SizedBox(width: 15),
@@ -33,7 +33,7 @@ class DashboardScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        "សួស្ដី, អាយដល",
+                        "សួស្ដី, តារា វង្ស",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -86,8 +86,8 @@ class DashboardScreen extends StatelessWidget {
               Divider(indent: 67, height: 0, thickness: 0.6),
               CustomListTile(
                 icon: Boxicons.bxs_dollar_circle,
-                title: "គ្រប់គ្រងការបើកប្រាក់ខែ",
-                subtitle: "ចំណាយប្រាក់ខែ",
+                title: "ចំណាយលើប្រាក់ខែ",
+                subtitle: "មើលចំនួនប្រាក់ខែ",
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -100,7 +100,14 @@ class DashboardScreen extends StatelessWidget {
                 icon: Boxicons.bxs_bell,
                 title: "សារជូនដំណឹង",
                 subtitle: "ព័ត៌មាន",
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => NotificationPage(),
+                    ),
+                  );
+                },
               ),
             ],
           ),

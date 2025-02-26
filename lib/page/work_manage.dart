@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hr/page/addnew_work.dart';
 import 'package:hr/page/detail_work.dart';
-import 'package:hr/page/formadjustsalary.dart';
 import 'package:hr/widget/customListTIle.dart';
 import 'package:hr/widget/customTextField.dart';
 import 'package:hugeicons/hugeicons.dart';
