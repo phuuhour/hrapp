@@ -50,7 +50,7 @@ class CustomListTile extends StatelessWidget {
                 SizedBox(height: 5),
                 Text(
                   subtitle,
-                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                 ),
               ],
             ),

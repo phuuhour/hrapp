@@ -40,8 +40,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 20),
                 CustomTextField(
-                  label: "អ៊ីម៊ែលឬលេខទូរស័ព្ទ",
-                  icon: Boxicons.bxs_user,
+                  label: "លេខទូរស័ព្ទ",
+                  icon: Boxicons.bxs_phone,
                   hint: '',
                 ),
                 const SizedBox(height: 10),
@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     setState(() {
                       isLoading = true;
                     });
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       CupertinoPageRoute(
                         builder: (context) => DashboardScreen(),

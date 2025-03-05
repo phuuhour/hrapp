@@ -14,6 +14,10 @@ class PayrollbyWork extends StatelessWidget {
       appBar: AppBar(
         title: Text('ប្រាក់ខែសរុប (ការងារ)', style: TextStyle(fontSize: 18)),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black87),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

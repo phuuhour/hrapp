@@ -11,19 +11,11 @@ class DetailWork extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: Text('ព័ត៌មានការងារ', style: TextStyle(fontSize: 18)),
         centerTitle: false,
-        backgroundColor: Colors.blue,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Boxicons.bx_x, color: Colors.white, size: 30),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black45),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -79,21 +71,18 @@ class DetailWork extends StatelessWidget {
                 subtitle: "Network Engineer",
                 onPressed: () {},
               ),
-              Divider(indent: 67, height: 0, thickness: 0.6),
               CustomListTile(
                 icon: Boxicons.bx_list_ul,
                 title: "ប្រភេទការងារ",
                 subtitle: "ពេញម៉ោង",
                 onPressed: () {},
               ),
-              Divider(indent: 67, height: 0, thickness: 0.6),
               CustomListTile(
                 icon: Boxicons.bxs_dollar_circle,
                 title: "ប្រាក់បៀវត្សរ៍",
                 subtitle: "\$5200",
                 onPressed: () {},
               ),
-              Divider(indent: 67, height: 0, thickness: 0.6),
               CustomListTile(
                 icon: Boxicons.bxs_calendar,
                 title: "ថ្ងៃខែចាប់ផ្ដើម",

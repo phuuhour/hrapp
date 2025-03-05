@@ -34,13 +34,10 @@ class _CustomDropdownFieldState extends State<CustomDropdownField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.label,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-        ),
+        Text(widget.label, style: const TextStyle(fontSize: 14)),
         const SizedBox(height: 5),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
             color: Color.fromARGB(255, 192, 230, 255),
             borderRadius: BorderRadius.circular(5),
@@ -48,10 +45,11 @@ class _CustomDropdownFieldState extends State<CustomDropdownField> {
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: _selectedValue,
+              borderRadius: BorderRadius.circular(5),
               isExpanded: true,
               icon: const Icon(Icons.arrow_drop_down, color: Colors.blue),
               iconSize: 30,
-              style: const TextStyle(fontSize: 14, color: Colors.black),
+              style: const TextStyle(fontSize: 17, color: Colors.black),
               dropdownColor: Colors.white,
               items:
                   widget.items.map((String value) {

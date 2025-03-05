@@ -55,65 +55,21 @@ class _AdjustSalaryState extends State<AdjustSalary> {
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 20),
-              CustomTextField(
-                label: 'ចំណងជើងការងារ',
-                hint: '',
-                icon: Boxicons.bx_file,
-              ),
-              const SizedBox(height: 10),
               CustomDropdownField(
-                label: 'ប្រភេទការងារ',
-                items: ['ពេញម៉ោង', 'ក្រៅម៉ោង', 'កិច្ចសន្យា'],
-                icon: Boxicons.bx_category,
-                onChanged: (String? value) {
-                  setState(() {
-                    selectedWorkType = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 10),
-              CustomTextField(
-                label: 'បរិយាយការងារ',
-                hint: '',
-                icon: Boxicons.bx_edit,
-              ),
-              const SizedBox(height: 10),
-              CustomDropdownField(
-                label: 'បុគ្គលិកដែលបានចាត់តាំង',
-                items: ['John Doe', 'Jane Smith', 'Michael Johnson'],
-                icon: Boxicons.bx_user,
-                onChanged: (String? value) {
-                  setState(() {
-                    assignedWorker = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 10),
-              CustomTextField(
-                label: 'ថ្ងៃចាប់ផ្តើម',
-                hint: 'DD/MM/YYYY',
-                icon: Boxicons.bx_calendar,
-                isDate: true,
-                controller: startDateController,
-              ),
-              const SizedBox(height: 10),
-              CustomTextField(
-                label: 'ថ្ងៃបញ្ចប់',
-                hint: 'DD/MM/YYYY',
-                icon: Boxicons.bx_calendar,
-                isDate: true,
-                controller: endDateController,
-              ),
-              const SizedBox(height: 10),
-              CustomDropdownField(
-                label: 'ស្ថានភាពការងារ',
-                items: ['កំពុងដំណើរការ', 'បញ្ចប់', 'បានលុប'],
+                label: 'ផ្នែក',
+                items: ['IT', 'SERVICE', 'ACCOUNT'],
                 icon: Boxicons.bx_list_check,
                 onChanged: (String? value) {
                   setState(() {
                     selectedStatus = value;
                   });
                 },
+              ),
+              const SizedBox(height: 10),
+              CustomTextField(
+                label: 'ការងារ',
+                hint: '',
+                icon: Boxicons.bx_file,
               ),
               const SizedBox(height: 10),
               CustomTextField(
@@ -130,7 +86,7 @@ class _AdjustSalaryState extends State<AdjustSalary> {
 
                 controller: notesController,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
               CustomButton(
                 text: "បញ្ជូន",
                 isLoading: isLoading,

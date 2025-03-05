@@ -1,7 +1,5 @@
-import 'package:boxicons/boxicons.dart';
 import 'package:flutter/material.dart';
 import 'package:hr/widget/customButton.dart' as btn;
-import 'package:hr/widget/customListTIle.dart';
 import 'package:hr/widget/showdialog.dart';
 
 class DetailEmp extends StatelessWidget {
@@ -11,97 +9,45 @@ class DetailEmp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: Text('ព័ត៌មានបុគ្គលិក', style: TextStyle(fontSize: 18)),
         centerTitle: false,
-        backgroundColor: Colors.blue,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Boxicons.bx_x, color: Colors.white, size: 30),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black45),
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: NetworkImage(
-                      'https://scontent.fpnh11-1.fna.fbcdn.net/v/t39.30808-6/480360307_1164277348375371_4858218047620340990_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeH2xAN6RdCsWLoeCjV2zhK1h557Q449rAaHnntDjj2sBmuu9bRlI7Zwu7SySeMn7xl99fIaBd1s0mYK1IKs3zE_&_nc_ohc=_kmbLgJkRwUQ7kNvgEPPT3B&_nc_oc=AdgVkzj7FEC3Y4qtkTR_xA68QAZfb0_XpuIHLJM4Qyd_XmmCzZfAn3JSORP-Kju-7KI&_nc_zt=23&_nc_ht=scontent.fpnh11-1.fna&_nc_gid=AHONHF374XvluRNs04OVpcI&oh=00_AYAHx0OQoFlByhcmlS5x-PjTOv3m1bjiKHSUS6dz0NWWuw&oe=67BCCC3A',
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image(
+                    height: 250,
+                    image: NetworkImage(
+                      'https://scontent.fpnh11-1.fna.fbcdn.net/v/t39.30808-6/475308868_1150454489757657_4675051414966855150_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeGoqGxxuSOm7JRBHicgzV2iJ5dpbjLjgoAnl2luMuOCgCFV8yLuLbqVMINGL6ZipNmoo9b2c_aGV3EZIkBgOjF-&_nc_ohc=8A7RoeGhDaMQ7kNvgE6_Rur&_nc_oc=AdimCXcR1fKdlVz_09d1sGx-ZMXjYtjuXjxNNJshYrag3vQbXNmzZ2Y49uMKfyJ3FyU&_nc_zt=23&_nc_ht=scontent.fpnh11-1.fna&_nc_gid=A5sq0U8Z2oy22w587Gyf3d0&oh=00_AYAcM_b3qf8PvfSwe77Zar2XcTswXjmOVvUGWeo4Hm0ZpA&oe=67CC8FE4',
                     ),
+                    fit: BoxFit.cover,
                   ),
-                  const SizedBox(width: 15),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "រិន សុដា",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      GestureDetector(
-                        child: Text('Network Engineer'),
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Text("ព័ត៌មានបុគ្គលិក", style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 10),
+                ),
+                SizedBox(height: 20),
 
-              CustomListTile(
-                icon: Boxicons.bxs_phone,
-                title: "លេខទូរស័ព្ទ",
-                subtitle: "014789632",
-                onPressed: () {},
-              ),
-              Divider(indent: 67, height: 0, thickness: 0.6),
-              CustomListTile(
-                icon: Boxicons.bxs_shopping_bag,
-                title: "ប្រភេទការងារ និងមុខតំណែង",
-                subtitle: "Network Engineer, Manager",
-                onPressed: () {},
-              ),
-              Divider(indent: 67, height: 0, thickness: 0.6),
-              CustomListTile(
-                icon: Boxicons.bxs_dollar_circle,
-                title: "ប្រាក់ខែ",
-                subtitle: "\$1200",
-                onPressed: () {},
-              ),
-              Divider(indent: 67, height: 0, thickness: 0.6),
-              CustomListTile(
-                icon: Boxicons.bxs_calendar,
-                title: "ថ្ងៃខែចូលធ្វើការ",
-                subtitle: "12-02-2021",
-                onPressed: () {},
-              ),
-              SizedBox(height: 20),
-              btn.CustomButton(
-                text: 'មានអ្វីមួយមិនប្រក្រតី',
-                onPressed: () {
-                  showCustomOptionDialog(context);
-                },
-                isPrimary: true,
-              ),
-            ],
+                SizedBox(height: 10),
+
+                SizedBox(height: 40),
+                btn.CustomButton(
+                  text: 'មានអ្វីមួយមិនប្រក្រតី',
+                  onPressed: () {
+                    showCustomOptionDialog(context);
+                  },
+                  isPrimary: true,
+                ),
+              ],
+            ),
           ),
         ),
       ),

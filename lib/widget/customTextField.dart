@@ -35,9 +35,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       lastDate: DateTime(2100),
     );
     if (pickedDate != null && widget.controller != null) {
-      String formattedDate = DateFormat(
-        'dd/MM/yyyy',
-      ).format(pickedDate); // ✅ Format Date
+      String formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate);
       setState(() {
         widget.controller!.text = formattedDate;
       });

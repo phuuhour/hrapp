@@ -130,22 +130,11 @@ class WorkManage extends StatelessWidget {
                   title: 'Network Engineer',
                   subtitle: '10-02-2017',
                   onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder:
-                          (context) => SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.942,
-                            child: DetailWork(),
-                          ),
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(builder: (context) => DetailWork()),
                     );
                   },
-                ),
-                CustomListTile(
-                  icon: Boxicons.bxl_javascript,
-                  title: 'Javascript Developer',
-                  subtitle: '11-05-2012',
-                  onPressed: () {},
                 ),
               ],
             ),
