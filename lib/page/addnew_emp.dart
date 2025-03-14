@@ -54,12 +54,14 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   label: 'លេខសម្គាល់បុគ្គលិក',
                   hint: '',
                   icon: Boxicons.bx_id_card,
+                  keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 10),
                 CustomTextField(
                   label: 'ឈ្មោះពេញ',
                   hint: '',
                   icon: Boxicons.bx_user,
+                  keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: 10),
                 CustomDropdownField(
@@ -76,24 +78,28 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   icon: Boxicons.bx_calendar,
                   isDate: true,
                   controller: dateController,
+                  keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: 10),
                 CustomTextField(
                   label: 'លេខទូរស័ព្ទ',
                   hint: '',
                   icon: Boxicons.bx_phone,
+                  keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: 10),
                 CustomTextField(
                   label: 'អ៊ីម៊ែល',
                   hint: '',
                   icon: Boxicons.bx_message_detail,
+                  keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: 10),
                 CustomTextField(
                   label: 'លេខអត្តសញ្ញាណប័ណ្ណ',
                   hint: '',
                   icon: Boxicons.bx_id_card,
+                  keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: 10),
                 CustomDropdownField(
@@ -107,6 +113,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   label: 'អាសយដ្ឋាន',
                   hint: '',
                   icon: Boxicons.bx_home,
+                  keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: 10),
                 CustomTextField(
@@ -115,6 +122,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   icon: Boxicons.bx_calendar,
                   isDate: true,
                   controller: dateController,
+                  keyboardType: TextInputType.text,
                 ),
 
                 SizedBox(height: 20),
@@ -159,12 +167,14 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   label: 'ឈ្មោះគណនី',
                   hint: '',
                   icon: Boxicons.bx_credit_card,
+                  keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: 10),
                 CustomTextField(
                   label: 'លេខគណនី',
                   hint: '',
                   icon: Boxicons.bx_credit_card_front,
+                  keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 20),
 
@@ -178,6 +188,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   label: 'ប្រាក់ខែគោល',
                   hint: '',
                   icon: Boxicons.bx_money,
+                  keyboardType: TextInputType.number,
                 ),
 
                 SizedBox(height: 40),

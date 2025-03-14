@@ -18,6 +18,7 @@ class CustomTextField extends StatefulWidget {
     this.isDate = false,
     this.controller,
     required this.hint,
+    required TextInputType keyboardType,
   });
 
   @override

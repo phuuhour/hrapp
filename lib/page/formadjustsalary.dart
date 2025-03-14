@@ -70,6 +70,7 @@ class _AdjustSalaryState extends State<AdjustSalary> {
                 label: 'ការងារ',
                 hint: '',
                 icon: Boxicons.bx_file,
+                keyboardType: TextInputType.text,
               ),
               const SizedBox(height: 10),
               CustomTextField(
@@ -77,13 +78,14 @@ class _AdjustSalaryState extends State<AdjustSalary> {
                 hint: '',
                 icon: Boxicons.bx_money,
                 controller: salaryController,
+                keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 10),
               CustomTextField(
                 label: 'កំណត់ចំណាំ',
                 hint: '',
                 icon: Boxicons.bx_note,
-
+                keyboardType: TextInputType.text,
                 controller: notesController,
               ),
               const SizedBox(height: 40),

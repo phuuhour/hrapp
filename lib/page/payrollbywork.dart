@@ -30,17 +30,7 @@ class PayrollbyWork extends StatelessWidget {
                 color: Colors.blue,
               ),
               SizedBox(height: 20),
-              CustomListTile(
-                icon: Boxicons.bx_network_chart,
-                title: 'Network Engineer',
-                subtitle: '\$1200',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(builder: (context) => DetailWork()),
-                  );
-                },
-              ),
+
               CustomListTile(
                 icon: Boxicons.bxl_javascript,
                 title: 'Javascript Developer',

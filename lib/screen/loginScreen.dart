@@ -43,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   label: "លេខទូរស័ព្ទ",
                   icon: Boxicons.bxs_phone,
                   hint: '',
+                  keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 10),
                 CustomTextField(
@@ -50,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   icon: Boxicons.bxs_lock,
                   isPassword: true,
                   hint: '',
+                  keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: 60),
                 CustomButton(

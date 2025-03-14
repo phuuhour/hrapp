@@ -1,11 +1,12 @@
 import 'package:boxicons/boxicons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/screen/loginScreen.dart';
 import 'package:hr/widget/customListTIle.dart';
+import 'package:hr/model/work.dart'; // Import the Work model
 
 class DetailWork extends StatelessWidget {
-  const DetailWork({super.key});
+  final Work work; // Add a Work parameter
+
+  const DetailWork({super.key, required this.work}); // Update the constructor
 
   @override
   Widget build(BuildContext context) {
@@ -25,68 +26,34 @@ class DetailWork extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: NetworkImage(
-                      'https://orangematter.solarwinds.com/wp-content/uploads/2018/05/iStock-500923676-1024x717.jpg',
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Network Engineer",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      GestureDetector(
-                        child: Text('IT'),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => LoginScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Text("ព័ត៌មានការងារ", style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 10),
-
               CustomListTile(
-                icon: Boxicons.bxs_detail,
+                icon: Boxicons.bx_shopping_bag,
+                title: "ផ្នែក",
+                subtitle: work.section,
+                onPressed: () {},
+              ),
+              CustomListTile(
+                icon: Boxicons.bx_file,
                 title: "ឈ្មោះការងារ",
-                subtitle: "Network Engineer",
+                subtitle: work.nameWork,
                 onPressed: () {},
               ),
               CustomListTile(
-                icon: Boxicons.bx_list_ul,
-                title: "ប្រភេទការងារ",
-                subtitle: "ពេញម៉ោង",
+                icon: Boxicons.bx_calendar,
+                title: "ថ្ងៃដំណើរការ",
+                subtitle: work.dateCreate,
                 onPressed: () {},
               ),
               CustomListTile(
-                icon: Boxicons.bxs_dollar_circle,
-                title: "ប្រាក់បៀវត្សរ៍",
-                subtitle: "\$5200",
+                icon: Boxicons.bx_money,
+                title: "ចំនួនប្រាក់បៀវត្ស",
+                subtitle: '\$${work.payroll.toStringAsFixed(2)}',
                 onPressed: () {},
               ),
               CustomListTile(
-                icon: Boxicons.bxs_calendar,
-                title: "ថ្ងៃខែចាប់ផ្ដើម",
-                subtitle: "12-02-2011",
+                icon: Boxicons.bx_note,
+                title: "កំណត់ចំណាំ",
+                subtitle: work.description,
                 onPressed: () {},
               ),
             ],
