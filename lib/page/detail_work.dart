@@ -1,60 +1,155 @@
 import 'package:boxicons/boxicons.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/widget/customListTIle.dart';
-import 'package:hr/model/work.dart'; // Import the Work model
 
-class DetailWork extends StatelessWidget {
-  final Work work; // Add a Work parameter
+class DetailWork extends StatefulWidget {
+  const DetailWork({super.key, required this.workData});
 
-  const DetailWork({super.key, required this.work}); // Update the constructor
+  final Map<String, dynamic> workData;
+
+  @override
+  State<DetailWork> createState() => _DetailWorkState();
+}
+
+class _DetailWorkState extends State<DetailWork> {
+  void deleteWorkById(String workId) {
+    FirebaseFirestore.instance
+        .collection('works')
+        .where('workId', isEqualTo: workId)
+        .get()
+        .then((querySnapshot) {
+          for (var doc in querySnapshot.docs) {
+            doc.reference.delete();
+          }
+        })
+        .catchError((error) {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ព័ត៌មានការងារ', style: TextStyle(fontSize: 18)),
-        centerTitle: false,
-        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black45),
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
+        title: Text(
+          widget.workData['workName'] ?? 'ព័ត៌មានការងារ',
+          style: TextStyle(fontSize: 18, color: Colors.white),
+        ),
+        backgroundColor: Colors.green,
+        elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(
+                      'លុបការងារ',
+                      style: TextStyle(color: Colors.red, fontSize: 18),
+                    ),
+                    content: Text('តើអ្នកប្រាកដទេ?'),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 25,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'មិនធ្វើ',
+                          style: TextStyle(color: Colors.black, fontSize: 14),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          deleteWorkById(widget.workData['workId']);
+                          setState(() {});
+                          Navigator.of(context).pop();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('ការងារត្រូវបានលុប!'),
+                              duration: Duration(seconds: 2),
+                              backgroundColor: Colors.blue,
+                            ),
+                          );
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'លុប',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            icon: Icon(Boxicons.bxs_trash, color: Colors.white, size: 20),
+          ),
+        ],
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      body: SingleChildScrollView(
+        child: SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomListTile(
-                icon: Boxicons.bx_shopping_bag,
-                title: "ផ្នែក",
-                subtitle: work.section,
-                onPressed: () {},
+              SizedBox(height: 10),
+              ListTile(
+                title: Text('លេខសម្គាល់ការងារ'),
+                trailing: Text(
+                  widget.workData['workId'] ?? '-',
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
-              CustomListTile(
-                icon: Boxicons.bx_file,
-                title: "ឈ្មោះការងារ",
-                subtitle: work.nameWork,
-                onPressed: () {},
+              ListTile(
+                title: Text('ផ្នែក'),
+                trailing: Text(
+                  widget.workData['section'] ?? '-',
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
-              CustomListTile(
-                icon: Boxicons.bx_calendar,
-                title: "ថ្ងៃដំណើរការ",
-                subtitle: work.dateCreate,
-                onPressed: () {},
+              ListTile(
+                title: Text('ឈ្មោះការងារ'),
+                trailing: Text(
+                  widget.workData['workName'] ?? '-',
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
-              CustomListTile(
-                icon: Boxicons.bx_money,
-                title: "ចំនួនប្រាក់បៀវត្ស",
-                subtitle: '\$${work.payroll.toStringAsFixed(2)}',
-                onPressed: () {},
+              ListTile(
+                title: Text('ថ្ងៃចាប់ផ្តើម'),
+                trailing: Text(
+                  widget.workData['date'] ?? '-',
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
-              CustomListTile(
-                icon: Boxicons.bx_note,
-                title: "កំណត់ចំណាំ",
-                subtitle: work.description,
-                onPressed: () {},
+              ListTile(
+                title: Text('ទីតាំងការងារ(សាខា)'),
+                trailing: Text(
+                  widget.workData['branch'] ?? '-',
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
+              ListTile(
+                title: Text('ប្រាក់បៀវត្ស'),
+                trailing: Text(
+                  widget.workData['payroll'] != null
+                      ? '\$${widget.workData['payroll'].toStringAsFixed(2)}'
+                      : '-',
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
             ],
           ),

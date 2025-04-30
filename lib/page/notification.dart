@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hr/widget/customListTIle.dart';
+import 'package:hr/widget/ListTIle.dart';
 
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});

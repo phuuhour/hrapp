@@ -1,9 +1,10 @@
+// ignore_for_file: file_names
+
 import 'package:boxicons/boxicons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hr/screen/dashboradScreen.dart';
-import 'package:hr/widget/customButton.dart';
-import 'package:hr/widget/customTextField.dart';
+import 'package:hr/widget/Button.dart';
+import 'package:hr/widget/TextField.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -35,40 +36,49 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'ចូលប្រើ',
+                  'ចូលគណនីរបស់អ្នក',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 50),
                 CustomTextField(
                   label: "លេខទូរស័ព្ទ",
-                  icon: Boxicons.bxs_phone,
+                  icon: Icon(Boxicons.bxs_phone),
+                  lendingIcon: false,
                   hint: '',
                   keyboardType: TextInputType.number,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 CustomTextField(
                   label: "ពាក្យសម្ងាត់",
-                  icon: Boxicons.bxs_lock,
                   isPassword: true,
                   hint: '',
+                  icon: Icon(Boxicons.bxs_lock),
+                  lendingIcon: false,
                   keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: 60),
                 CustomButton(
-                  text: "ចូលគណនី",
+                  color: Colors.blue,
+                  width: MediaQuery.of(context).size.width,
+                  height: 50,
                   isLoading: isLoading,
+                  text: 'ចូលគណនី',
                   onPressed: () {
                     setState(() {
                       isLoading = true;
                     });
-                    Navigator.pushReplacement(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => DashboardScreen(),
-                      ),
-                    );
+                    Future.delayed(Duration(seconds: 0), () {
+                      setState(() {
+                        isLoading = false;
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DashboardScreen(),
+                          ),
+                        );
+                      });
+                    });
                   },
-                  isPrimary: true,
                 ),
               ],
             ),

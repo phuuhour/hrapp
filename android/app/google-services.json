@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "180014308582",
+    "project_id": "hr-rule",
+    "storage_bucket": "hr-rule.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:180014308582:android:fcb7d6cb0fa236d6ff2f27",
+        "android_client_info": {
+          "package_name": "com.example.hr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSlbnB83Zk4TTGtgPWuZ57mZYIPjr54dw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
