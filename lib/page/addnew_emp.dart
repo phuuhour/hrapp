@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:math';
+
 import 'package:boxicons/boxicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +40,111 @@ class _AddnewEmpState extends State<AddnewEmp> {
   final TextEditingController _branch = TextEditingController();
   final TextEditingController _section = TextEditingController();
 
-  // Stream for sections based on selected branch
+  List<String> existingEmpIds = [];
+  List<String> empIdItems = [];
+  List<String> sectionItems = [];
+  List<String> workNameItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadExistingEmpIds();
+    _workname.addListener(_generateEmpIdBasedOnWorkName);
+    _branch.addListener(_loadSectionsForBranch);
+    _section.addListener(_loadWorkNamesForSection);
+  }
+
+  void _loadExistingEmpIds() async {
+    final querySnapshot =
+        await FirebaseFirestore.instance.collection('employees').get();
+
+    setState(() {
+      existingEmpIds =
+          querySnapshot.docs.map((doc) => doc['empId'] as String).toList();
+    });
+  }
+
+  void _loadSectionsForBranch() async {
+    if (_branch.text.isEmpty) return;
+
+    final querySnapshot =
+        await FirebaseFirestore.instance
+            .collection('works')
+            .where('branch', isEqualTo: _branch.text)
+            .get();
+
+    final sections =
+        querySnapshot.docs
+            .map((doc) => doc['section'] as String)
+            .toSet()
+            .toList();
+
+    setState(() {
+      sectionItems = sections;
+      _section.clear();
+      _workname.clear();
+      _empId.clear();
+    });
+  }
+
+  void _loadWorkNamesForSection() async {
+    if (_branch.text.isEmpty || _section.text.isEmpty) return;
+
+    final querySnapshot =
+        await FirebaseFirestore.instance
+            .collection('works')
+            .where('branch', isEqualTo: _branch.text)
+            .where('section', isEqualTo: _section.text)
+            .get();
+
+    final workNames =
+        querySnapshot.docs
+            .map((doc) => doc['workName'] as String)
+            .toSet()
+            .toList();
+
+    setState(() {
+      workNameItems = workNames;
+      _workname.clear();
+      _empId.clear();
+    });
+  }
+
+  void _generateEmpIdBasedOnWorkName() {
+    if (_workname.text.trim().length >= 3) {
+      String generated = generateEmpId(_workname.text.trim(), existingEmpIds);
+      setState(() {
+        empIdItems = [generated];
+        _empId.text = generated;
+      });
+    }
+  }
+
+  String generateEmpId(String workName, List<String> existingIds) {
+    String prefix =
+        workName
+            .replaceAll(' ', '')
+            .substring(0, min(3, workName.length))
+            .toUpperCase();
+    String newId;
+    Random random = Random();
+    int attempts = 0;
+
+    do {
+      int num = 100 + random.nextInt(900);
+      newId = '$prefix$num';
+      attempts++;
+
+      if (attempts > 100) {
+        newId =
+            '$prefix${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
+        break;
+      }
+    } while (existingIds.contains(newId));
+
+    return newId;
+  }
+
   Stream<QuerySnapshot> getSectionsStream(String? branch) {
     if (branch == null || branch.isEmpty) {
       return const Stream.empty();
@@ -49,7 +155,6 @@ class _AddnewEmpState extends State<AddnewEmp> {
         .snapshots();
   }
 
-  // Stream for work names based on selected branch and section
   Stream<QuerySnapshot> getWorkNamesStream(String? branch, String? section) {
     if (branch == null ||
         branch.isEmpty ||
@@ -88,7 +193,6 @@ class _AddnewEmpState extends State<AddnewEmp> {
 
   void addEmployee() async {
     if (_formKey.currentState!.validate()) {
-      // Check empty fields first
       if (_empId.text.isEmpty ||
           _fullname.text.isEmpty ||
           _gender.text.isEmpty ||
@@ -103,8 +207,6 @@ class _AddnewEmpState extends State<AddnewEmp> {
           _section.text.isEmpty ||
           _workname.text.isEmpty ||
           _paidby.text.isEmpty ||
-          _accname.text.isEmpty ||
-          _accnumber.text.isEmpty ||
           _basesal.text.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -118,11 +220,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
         return;
       }
 
-      // Validation
-      final fullnameReg = RegExp(
-        r'^[\p{L}\s]+$',
-        unicode: true,
-      ); // allow all languages + space
+      final fullnameReg = RegExp(r'^[\p{L}\s]+$', unicode: true);
       final numberReg = RegExp(r'^[0-9]+$');
       final emailReg = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
@@ -178,32 +276,6 @@ class _AddnewEmpState extends State<AddnewEmp> {
         return;
       }
 
-      if (!fullnameReg.hasMatch(_accname.text.trim())) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'ឈ្មោះគណនីត្រូវតែមានតែអក្សរប៉ុណ្ណោះ',
-              style: TextStyle(fontSize: 16),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-
-      if (!numberReg.hasMatch(_accnumber.text.trim())) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'លេខគណនីត្រូវតែមានតែលេខប៉ុណ្ណោះ',
-              style: TextStyle(fontSize: 16),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-
       if (int.tryParse(_basesal.text.trim()) == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -217,98 +289,57 @@ class _AddnewEmpState extends State<AddnewEmp> {
         return;
       }
 
-      // If all validations pass
       setState(() {
         isLoading = true;
       });
 
-      final newEmployee = EmpData(
-        empId: _empId.text.trim(),
-        fullname: _fullname.text.trim(),
-        gender: _gender.text.trim(),
-        dob: DateTime.parse(_dob.text.trim()),
-        phone: _phone.text.trim(),
-        email: _email.text.trim(),
-        nationalId: _nationalId.text.trim(),
-        typeEmp: _typeemp.text.trim(),
-        address: _address.text.trim(),
-        startDate: DateTime.parse(_startDate.text.trim()),
-        paidBy: _paidby.text.trim(),
-        accName: _accname.text.trim(),
-        accNumber: _accnumber.text.trim(),
-        baseSal: _basesal.text.trim(),
-      );
+      try {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'បុគ្គលិកថ្មីត្រូវបានបន្ថែមដោយជោគជ័យ!',
+              style: TextStyle(fontSize: 16),
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
 
-      FirebaseFirestore.instance
-          .collection('employees')
-          .where('empId', isEqualTo: newEmployee.empId)
-          .get()
-          .then((querySnapshot) {
-            if (querySnapshot.docs.isNotEmpty) {
-              setState(() {
-                isLoading = false;
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'លេខសម្គាល់បុគ្គលិកនេះមានរួចហើយ',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Colors.red,
-                ),
-              );
-              return;
-            }
-
-            FirebaseFirestore.instance
-                .collection('employees')
-                .add(newEmployee.toMap())
-                .then((_) {
-                  setState(() {
-                    isLoading = false;
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'បុគ្គលិកថ្មីត្រូវបានបន្ថែមដោយជោគជ័យ!',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                  _empId.clear();
-                  _fullname.clear();
-                  _gender.clear();
-                  _dob.clear();
-                  _phone.clear();
-                  _email.clear();
-                  _nationalId.clear();
-                  _typeemp.clear();
-                  _address.clear();
-                  _startDate.clear();
-                  _branch.clear();
-                  _section.clear();
-                  _workname.clear();
-                  _paidby.clear();
-                  _accname.clear();
-                  _accnumber.clear();
-                  _basesal.clear();
-                })
-                .catchError((error) {
-                  setState(() {
-                    isLoading = false;
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'មានបញ្ហាក្នុងការបន្ថែមបុគ្គលិក: $error',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                });
-          });
+        // Clear all fields
+        _empId.clear();
+        _fullname.clear();
+        _gender.clear();
+        _dob.clear();
+        _phone.clear();
+        _email.clear();
+        _nationalId.clear();
+        _typeemp.clear();
+        _address.clear();
+        _startDate.clear();
+        _branch.clear();
+        _section.clear();
+        _workname.clear();
+        _paidby.clear();
+        _accname.clear();
+        _accnumber.clear();
+        _basesal.clear();
+      } catch (error) {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'មានបញ្ហាក្នុងការបន្ថែមបុគ្គលិក: $error',
+              style: const TextStyle(fontSize: 16),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -342,17 +373,107 @@ class _AddnewEmpState extends State<AddnewEmp> {
               children: [
                 const SizedBox(height: 20),
                 const Text(
+                  'ព័ត៌មានការងារ',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 10),
+                CustomDropdownList(
+                  label: 'ទីតាំងការងារ(សាខា)',
+                  items: const [
+                    'បន្ទាយមានជ័យ',
+                    'បាត់ដំបង',
+                    'កំពង់ចាម',
+                    'កំពង់ឆ្នាំង',
+                    'កំពង់ស្ពឺ',
+                    'កំពង់ធំ',
+                    'កំពត',
+                    'កណ្ដាល',
+                    'កោះកុង',
+                    'ក្រចេះ',
+                    'មណ្ឌលគិរី',
+                    'ភ្នំពេញ',
+                    'ព្រះវិហារ',
+                    'ព្រៃវែង',
+                    'ពោធិ៍សាត់',
+                    'រតនគិរី',
+                    'សៀមរាប',
+                    'ព្រះសីហនុ',
+                    'ស្ទឹងត្រែង',
+                    'ស្វាយរៀង',
+                    'តាកែវ',
+                    'ឧត្តរមានជ័យ',
+                    'ប៉ៃលិន',
+                    'ត្បូងឃ្មុំ',
+                  ],
+                  hint: 'សូមជ្រើសរើស',
+                  controller: _branch,
+                  icon: Icons.arrow_drop_down,
+                  onChanged: (items) {
+                    if (items != null) {
+                      setState(() {
+                        _branch.text = items;
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 10),
+                CustomDropdownList(
+                  label: 'ផ្នែកការងារ',
+                  items: sectionItems,
+                  hint:
+                      _branch.text.isEmpty
+                          ? 'សូមជ្រើសរើសសាខាជាមុនសិន'
+                          : 'ជ្រើសរើសផ្នែក',
+                  controller: _section,
+                  icon: Icons.arrow_drop_down,
+                  onChanged: (items) {
+                    if (items != null) {
+                      setState(() {
+                        _section.text = items;
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 10),
+                CustomDropdownList(
+                  label: 'មុខងារ',
+                  items: workNameItems,
+                  hint:
+                      _section.text.isEmpty
+                          ? 'សូមជ្រើសរើសផ្នែកជាមុនសិន'
+                          : 'ជ្រើសរើសមុខងារ',
+                  controller: _workname,
+                  icon: Icons.arrow_drop_down,
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        _workname.text = value;
+                      });
+                    }
+                  },
+                ),
+
+                const SizedBox(height: 20),
+                const Text(
                   'ព័ត៌មានបុគ្គលិក',
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 10),
-                CustomTextField(
+                CustomDropdownList(
                   label: 'លេខសម្គាល់បុគ្គលិក',
-                  hint: '',
-                  icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.number,
-                  lendingIcon: false,
+                  items: empIdItems,
+                  hint:
+                      _workname.text.isEmpty
+                          ? 'ជ្រើសរើសមុខងារដំបូងដើម្បីបង្កើតលេខសម្គាល់'
+                          : 'លេខសម្គាល់បុគ្គលិក',
+                  icon: Icons.arrow_drop_down,
+
                   controller: _empId,
+                  onChanged: (value) {
+                    if (value != null) {
+                      _empId.text = value;
+                    }
+                  },
                 ),
                 const SizedBox(height: 10),
                 CustomTextField(
@@ -439,133 +560,13 @@ class _AddnewEmpState extends State<AddnewEmp> {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  'ព័ត៌មានការងារ',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(height: 10),
-                CustomDropdownList(
-                  label: 'ទីតាំងការងារ(សាខា)',
-                  items: const [
-                    'បន្ទាយមានជ័យ',
-                    'បាត់ដំបង',
-                    'កំពង់ចាម',
-                    'កំពង់ឆ្នាំង',
-                    'កំពង់ស្ពឺ',
-                    'កំពង់ធំ',
-                    'កំពត',
-                    'កណ្ដាល',
-                    'កោះកុង',
-                    'ក្រចេះ',
-                    'មណ្ឌលគិរី',
-                    'ភ្នំពេញ',
-                    'ព្រះវិហារ',
-                    'ព្រៃវែង',
-                    'ពោធិ៍សាត់',
-                    'រតនគិរី',
-                    'សៀមរាប',
-                    'ព្រះសីហនុ',
-                    'ស្ទឹងត្រែង',
-                    'ស្វាយរៀង',
-                    'តាកែវ',
-                    'ឧត្តរមានជ័យ',
-                    'ប៉ៃលិន',
-                    'ត្បូងឃ្មុំ',
-                  ],
-                  hint: 'សូមជ្រើសរើស',
-                  controller: _branch,
-                  icon: Icons.arrow_drop_down,
-                  onChanged: (items) {
-                    if (items != null) {
-                      setState(() {
-                        _branch.text = items;
-                        _section.clear();
-                        _workname.clear();
-                      });
-                    }
-                  },
-                ),
-                const SizedBox(height: 10),
-                StreamBuilder<QuerySnapshot>(
-                  stream: getSectionsStream(_branch.text),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    }
-                    if (snapshot.hasError) {
-                      return const Text('មានបញ្ហាក្នុងការទាញយកទិន្នន័យ');
-                    }
-                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return const Text('មិនមានផ្នែកនៅសាខានេះទេ');
-                    }
-
-                    final sections =
-                        snapshot.data!.docs
-                            .map((doc) => doc['section'] as String)
-                            .toSet()
-                            .toList();
-
-                    return CustomDropdownList(
-                      label: 'ផ្នែកការងារ',
-                      items: sections,
-                      hint: 'ជ្រើសរើសផ្នែក',
-                      controller: _section,
-                      icon: Icons.arrow_drop_down,
-                      onChanged: (items) {
-                        if (items != null) {
-                          setState(() {
-                            _section.text = items;
-                          });
-                        }
-                      },
-                    );
-                  },
-                ),
-                const SizedBox(height: 10),
-                StreamBuilder<QuerySnapshot>(
-                  stream: getWorkNamesStream(_branch.text, _section.text),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    }
-                    if (snapshot.hasError) {
-                      return const Text('មានបញ្ហាក្នុងការទាញយកទិន្នន័យ');
-                    }
-                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return const Text('មិនមានមុខងារ​នៅក្នុងផ្នែកនេះទេ');
-                    }
-
-                    final workNames =
-                        snapshot.data!.docs
-                            .map((doc) => doc['workName'] as String)
-                            .toSet()
-                            .toList();
-
-                    return CustomDropdownList(
-                      label: 'មុខងារ',
-                      items: workNames,
-                      hint: 'ជ្រើសរើសមុខងារ',
-                      controller: _workname,
-                      icon: Icons.arrow_drop_down,
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            _workname.text = value;
-                          });
-                        }
-                      },
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 20),
-                const Text(
                   'ព័ត៌មានប្រាក់ឈ្នួល',
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 10),
                 CustomDropdownList(
                   label: 'បើកប្រាក់ដោយ',
-                  items: const ['សាច់ប្រាក់', 'ធនាគារ', 'អេឡិចត្រូនិច'],
+                  items: const ['សាច់ប្រាក់', 'ធនាគារ'],
                   hint: '',
                   icon: Icons.arrow_drop_down,
                   controller: _paidby,
@@ -574,7 +575,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                 const SizedBox(height: 10),
                 CustomTextField(
                   label: 'ឈ្មោះគណនីធនាគារ',
-                  hint: '',
+                  hint: 'អាចរំលង',
                   icon: const Icon(Boxicons.bx_credit_card),
                   keyboardType: TextInputType.text,
                   lendingIcon: false,
@@ -583,7 +584,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                 const SizedBox(height: 10),
                 CustomTextField(
                   label: 'លេខគណនីធនាគារ',
-                  hint: '',
+                  hint: 'អាចរំលង',
                   icon: const Icon(Boxicons.bx_credit_card),
                   keyboardType: TextInputType.number,
                   lendingIcon: false,
