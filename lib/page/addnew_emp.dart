@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:boxicons/boxicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/model/empdata.dart';
 import 'package:hr/widget/Button.dart';
 import 'package:hr/widget/Dropdownlist.dart';
 import 'package:hr/widget/TextField.dart';
@@ -193,6 +192,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
 
   void addEmployee() async {
     if (_formKey.currentState!.validate()) {
+      // Validate all required fields
       if (_empId.text.isEmpty ||
           _fullname.text.isEmpty ||
           _gender.text.isEmpty ||
@@ -220,15 +220,16 @@ class _AddnewEmpState extends State<AddnewEmp> {
         return;
       }
 
-      final fullnameReg = RegExp(r'^[\p{L}\s]+$', unicode: true);
+      // Regular expressions for validation
+      final fullname = RegExp(r'^[a-zA-Z\u1780-\u17FF\s]+$');
       final numberReg = RegExp(r'^[0-9]+$');
       final emailReg = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
-      if (!fullnameReg.hasMatch(_fullname.text.trim())) {
+      if (!fullname.hasMatch(_fullname.text.trim())) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
-              'ឈ្មោះត្រូវតែមានតែអក្សរប៉ុណ្ណោះ',
+              'ឈ្មោះពេញត្រូវតែជាអក្សរ',
               style: TextStyle(fontSize: 16),
             ),
             backgroundColor: Colors.red,
@@ -294,13 +295,44 @@ class _AddnewEmpState extends State<AddnewEmp> {
       });
 
       try {
+        // Parse dates first to ensure they're valid
+        final dobDate = DateTime.parse(_dob.text.trim());
+        final startDate = DateTime.parse(_startDate.text.trim());
+
+        final empData = {
+          'empId': _empId.text.trim(),
+          'fullname': _fullname.text.trim(),
+          'gender': _gender.text.trim(),
+          'dob': dobDate,
+          'phone': _phone.text.trim(),
+          'email': _email.text.trim(),
+          'nationalId': _nationalId.text.trim(),
+          'typeEmp': _typeemp.text.trim(),
+          'address': _address.text.trim(),
+          'startDate': startDate,
+          'branch': _branch.text.trim(),
+          'section': _section.text.trim(),
+          'workname': _workname.text.trim(),
+          'paidBy': _paidby.text.trim(),
+          'accName': _accname.text.trim(),
+          'accNumber': _accnumber.text.trim(),
+          'baseSal': _basesal.text.trim(),
+          'createdAt': FieldValue.serverTimestamp(), // Add timestamp
+        };
+
+        // Add to Firestore
+        await FirebaseFirestore.instance
+            .collection('employees')
+            .doc(_empId.text.trim()) // Use empId as document ID
+            .set(empData);
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
               'បុគ្គលិកថ្មីត្រូវបានបន្ថែមដោយជោគជ័យ!',
               style: TextStyle(fontSize: 16),
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: Colors.blue,
           ),
         );
 
@@ -322,10 +354,17 @@ class _AddnewEmpState extends State<AddnewEmp> {
         _accname.clear();
         _accnumber.clear();
         _basesal.clear();
+      } on FormatException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'ទំរង់កាលបរិច្ឆេទមិនត្រឹមត្រូវ: ${e.message}',
+              style: const TextStyle(fontSize: 16),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
       } catch (error) {
-        setState(() {
-          isLoading = false;
-        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -462,10 +501,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                 CustomDropdownList(
                   label: 'លេខសម្គាល់បុគ្គលិក',
                   items: empIdItems,
-                  hint:
-                      _workname.text.isEmpty
-                          ? 'ជ្រើសរើសមុខងារដំបូងដើម្បីបង្កើតលេខសម្គាល់'
-                          : 'លេខសម្គាល់បុគ្គលិក',
+                  hint: _workname.text.isEmpty ? 'លេខសម្គាល់' : 'លេខសម្គាល់',
                   icon: Icons.arrow_drop_down,
 
                   controller: _empId,
@@ -508,7 +544,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   label: 'លេខទូរស័ព្ទ',
                   hint: '',
                   icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.number,
                   lendingIcon: false,
                   controller: _phone,
                 ),
@@ -517,7 +553,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   label: 'អ៊ីម៊ែល',
                   hint: '',
                   icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.emailAddress,
                   lendingIcon: false,
                   controller: _email,
                 ),
@@ -526,7 +562,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                   label: 'លេខអត្តសញ្ញាណប័ណ្ណ',
                   hint: '',
                   icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.number,
                   lendingIcon: false,
                   controller: _nationalId,
                 ),

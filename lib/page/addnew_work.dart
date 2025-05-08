@@ -427,7 +427,7 @@ class _AddNewWorkState extends State<AddNewWork> {
                   label: 'លេខសម្គាល់ការងារ',
                   hint: '',
                   icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.text,
                   lendingIcon: false,
                   controller: _workIdController,
                 ),

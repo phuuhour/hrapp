@@ -1,6 +1,8 @@
 import 'package:boxicons/boxicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 class DetailWork extends StatefulWidget {
   const DetailWork({super.key, required this.workData});
@@ -27,6 +29,7 @@ class _DetailWorkState extends State<DetailWork> {
 
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting('km', null);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -78,7 +81,7 @@ class _DetailWorkState extends State<DetailWork> {
                             SnackBar(
                               content: Text('ការងារត្រូវបានលុប!'),
                               duration: Duration(seconds: 2),
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Colors.green,
                             ),
                           );
                           Navigator.of(context).pop();
@@ -131,7 +134,9 @@ class _DetailWorkState extends State<DetailWork> {
               ListTile(
                 title: Text('ថ្ងៃចាប់ផ្តើម'),
                 trailing: Text(
-                  widget.workData['date'] ?? '-',
+                  widget.workData['date'] != null
+                      ? ' ${DateFormat('dd MMM yyyy', 'km').format(DateTime.parse(widget.workData['date']))}'
+                      : '-',
                   style: TextStyle(fontSize: 15),
                 ),
               ),
