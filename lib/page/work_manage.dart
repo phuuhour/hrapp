@@ -79,7 +79,7 @@ class _WorkManageState extends State<WorkManage> {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return CustomListTile(
-                              icon: Boxicons.bxs_shopping_bag,
+                              icon: Boxicons.bxs_briefcase,
                               color: Colors.green,
                               title: "ការងារទាំងអស់",
                               subtitle: "សរុប៖ ..",
@@ -95,7 +95,7 @@ class _WorkManageState extends State<WorkManage> {
                             return Column(
                               children: [
                                 CustomListTile(
-                                  icon: Boxicons.bxs_shopping_bag,
+                                  icon: Boxicons.bxs_briefcase,
                                   color: Colors.green,
                                   title: "ការងារទាំងអស់",
                                   subtitle: "សរុប៖ $totalCount",

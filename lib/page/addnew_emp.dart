@@ -119,24 +119,19 @@ class _AddnewEmpState extends State<AddnewEmp> {
     }
   }
 
-  String generateEmpId(String workName, List<String> existingIds) {
-    String prefix =
-        workName
-            .replaceAll(' ', '')
-            .substring(0, min(3, workName.length))
-            .toUpperCase();
+  String generateEmpId(String workId, List<String> existingIds) {
     String newId;
     Random random = Random();
     int attempts = 0;
 
     do {
       int num = 100 + random.nextInt(900);
-      newId = '$prefix$num';
+      newId = '${workId}_$num';
       attempts++;
 
       if (attempts > 100) {
         newId =
-            '$prefix${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
+            '${workId}_${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
         break;
       }
     } while (existingIds.contains(newId));

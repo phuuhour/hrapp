@@ -104,14 +104,6 @@ class _DetailEmpState extends State<DetailEmp> {
         elevation: 0,
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Boxicons.bxs_edit_alt,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
-          IconButton(
             onPressed: () {
               showDialog(
                 context: context,

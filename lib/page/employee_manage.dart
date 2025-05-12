@@ -200,6 +200,10 @@ class _EmployeeManageState extends State<EmployeeManage> {
                                       style: TextStyle(fontSize: 16),
                                     ),
                                     subtitle: Text(position),
+                                    trailing: Icon(
+                                      Boxicons.bxs_chevron_right,
+                                      color: Colors.grey,
+                                    ),
                                   );
                                 }),
                               );

@@ -103,7 +103,7 @@ class DashboardScreen extends StatelessWidget {
                     vertical: 25,
                   ),
                   child: CustomListTile(
-                    icon: Boxicons.bxs_shopping_bag,
+                    icon: Boxicons.bxs_briefcase,
                     color: Colors.green,
                     title: "ការងារទាំងអស់",
                     subtitle: "បញ្ជីការងារ",
@@ -132,6 +132,32 @@ class DashboardScreen extends StatelessWidget {
                     color: Colors.orangeAccent,
                     title: "ប្រាក់ប្រចាំខែ",
                     subtitle: "មើលចំនួនប្រាក់ខែ",
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => PayrollManage(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              Card(
+                shape: Border.symmetric(
+                  vertical: BorderSide(color: Colors.purple, width: 3),
+                ),
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 25,
+                  ),
+                  child: CustomListTile(
+                    icon: Boxicons.bxs_user_plus,
+                    color: Colors.purple,
+                    title: "គណនីបុគ្គលិក",
+                    subtitle: "បង្កើតគណនីបុគ្គលិកថ្មី",
                     onPressed: () {
                       Navigator.push(
                         context,

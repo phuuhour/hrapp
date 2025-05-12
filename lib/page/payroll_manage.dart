@@ -1,15 +1,35 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'package:boxicons/boxicons.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/page/formadjustsalary.dart';
-import 'package:hr/page/payrollbyemp.dart';
-import 'package:hr/page/payrollbywork.dart';
-import 'package:hr/widget/ListTIle.dart';
+import 'package:hr/model/empdata.dart';
+import 'package:hr/page/detail_emp.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
-class PayrollManage extends StatelessWidget {
+class PayrollManage extends StatefulWidget {
   const PayrollManage({super.key});
+
+  @override
+  State<PayrollManage> createState() => _PayrollManageState();
+}
+
+class _PayrollManageState extends State<PayrollManage> {
+  Future<double> fetchTotalSalary() async {
+    final QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('employees').get();
+
+    double totalSalary = 0.0;
+
+    for (var doc in snapshot.docs) {
+      final empData = EmpData.fromMap(doc.data() as Map<String, dynamic>);
+      totalSalary += double.tryParse(empData.baseSal) ?? 0.0;
+    }
+
+    return totalSalary;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +69,9 @@ class PayrollManage extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.history, color: Colors.white, size: 20),
-            onPressed: () {},
+            onPressed: () {
+              setState(() {});
+            },
           ),
         ],
       ),
@@ -122,12 +144,36 @@ class PayrollManage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(height: 20),
-                                Text(
-                                  'ទឹកប្រាក់សរុបៈ NULL',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.black,
-                                  ),
+                                FutureBuilder<double>(
+                                  future: fetchTotalSalary(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Text(
+                                        'ទឹកប្រាក់សរុបៈ ...',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                        ),
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Text(
+                                        'ទឹកប្រាក់សរុបៈ មានបញ្ហា',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                        ),
+                                      );
+                                    } else {
+                                      return Text(
+                                        'ទឹកប្រាក់សរុបៈ \$${snapshot.data?.toStringAsFixed(2) ?? '0.00'}',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                        ),
+                                      );
+                                    }
+                                  },
                                 ),
                                 SizedBox(height: 5),
                                 Text(
@@ -149,14 +195,6 @@ class PayrollManage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.downloading,
-                            size: 40,
-                            color: Colors.orangeAccent,
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -166,46 +204,74 @@ class PayrollManage extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
-                      CustomListTile(
-                        color: Colors.orangeAccent,
-                        icon: Boxicons.bxs_user,
-                        title: 'ប្រាក់សរុប (បុគ្គលិក)',
-                        subtitle: 'ប្រាក់សរុបបុគ្គលិកទាំងអស់',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => Payrollbyemp(),
-                            ),
-                          );
-                        },
-                      ),
-                      CustomListTile(
-                        color: Colors.orangeAccent,
-                        icon: Boxicons.bxs_shopping_bag,
-                        title: 'ប្រាក់សរុប (ការងារ)',
-                        subtitle: 'ប្រាក់សរុបតាមការងារ',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => PayrollbyWork(),
-                            ),
-                          );
-                        },
-                      ),
-                      CustomListTile(
-                        color: Colors.orangeAccent,
-                        icon: Boxicons.bxs_hand_up,
-                        title: 'ស្នើរសុំបន្ថែមប្រាក់ខែ',
-                        subtitle: 'ទម្រង់ស្នើរសុំបន្ថែមទឹកប្រាក់',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => AdjustSalary(),
-                            ),
-                          );
+                      FutureBuilder<QuerySnapshot>(
+                        future:
+                            FirebaseFirestore.instance
+                                .collection('employees')
+                                .get(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 200),
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text('មានបញ្ហាក្នុងការទាញយកទិន្នន័យ'),
+                            );
+                          } else {
+                            final employees = snapshot.data?.docs ?? [];
+
+                            if (employees.isEmpty) {
+                              return Center(child: Text('មិនមានបុគ្គលិកទេ'));
+                            }
+
+                            return Column(
+                              children: List.generate(employees.length, (
+                                index,
+                              ) {
+                                final employee = employees[index];
+                                final data =
+                                    employee.data() as Map<String, dynamic>;
+                                final name = data['fullname'] ?? '...';
+                                final baseSal = data['baseSal'] ?? '...';
+
+                                return ListTile(
+                                  contentPadding: EdgeInsets.only(left: 0),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                        builder:
+                                            (context) => DetailEmp(
+                                              empId:
+                                                  snapshot.data!.docs[index].id,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  leading: CircleAvatar(
+                                    radius: 25,
+                                    backgroundImage: AssetImage(
+                                      'assets/images/profile.png',
+                                    ),
+                                  ),
+                                  title: Text(
+                                    name,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  subtitle: Text('\$' + baseSal),
+                                  trailing: Text(
+                                    data['workname'] ?? '...',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                );
+                              }),
+                            );
+                          }
                         },
                       ),
                     ],
