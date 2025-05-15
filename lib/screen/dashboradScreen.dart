@@ -4,6 +4,7 @@ import 'package:boxicons/boxicons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hr/page/employee_manage.dart';
+import 'package:hr/page/createaccount.dart';
 import 'package:hr/page/payroll_manage.dart';
 import 'package:hr/page/search.dart';
 import 'package:hr/page/work_manage.dart';
@@ -145,7 +146,7 @@ class DashboardScreen extends StatelessWidget {
               ),
               Card(
                 shape: Border.symmetric(
-                  vertical: BorderSide(color: Colors.purple, width: 3),
+                  vertical: BorderSide(color: Colors.teal, width: 3),
                 ),
                 color: Colors.white,
                 child: Padding(
@@ -155,15 +156,13 @@ class DashboardScreen extends StatelessWidget {
                   ),
                   child: CustomListTile(
                     icon: Boxicons.bxs_user_plus,
-                    color: Colors.purple,
+                    color: Colors.teal,
                     title: "គណនីបុគ្គលិក",
                     subtitle: "បង្កើតគណនីបុគ្គលិកថ្មី",
                     onPressed: () {
                       Navigator.push(
                         context,
-                        CupertinoPageRoute(
-                          builder: (context) => PayrollManage(),
-                        ),
+                        CupertinoPageRoute(builder: (context) => CreateAcc()),
                       );
                     },
                   ),
