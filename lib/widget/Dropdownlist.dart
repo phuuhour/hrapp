@@ -9,6 +9,7 @@ class CustomDropdownList extends StatefulWidget {
   final IconData icon;
   final TextEditingController? controller;
   final Color color;
+  final void Function(String?) onChanged; // ✅ Fix here
 
   const CustomDropdownList({
     super.key,
@@ -18,7 +19,7 @@ class CustomDropdownList extends StatefulWidget {
     required this.icon,
     this.controller,
     this.color = const Color.fromARGB(255, 255, 255, 255),
-    required Null Function(dynamic value) onChanged,
+    required this.onChanged, // ✅ Save to use later
   });
 
   @override
@@ -28,7 +29,6 @@ class CustomDropdownList extends StatefulWidget {
 class _CustomDropdownListState extends State<CustomDropdownList> {
   @override
   Widget build(BuildContext context) {
-    // Determine selected item from controller
     String? currentValue =
         (widget.controller?.text.isNotEmpty ?? false) &&
                 widget.items.contains(widget.controller!.text)
@@ -69,6 +69,7 @@ class _CustomDropdownListState extends State<CustomDropdownList> {
               if (widget.controller != null) {
                 widget.controller!.text = newValue ?? '';
               }
+              widget.onChanged(newValue); // ✅ Important
             });
           },
         ),
