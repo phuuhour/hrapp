@@ -19,6 +19,7 @@ class AddnewEmp extends StatefulWidget {
 class _AddnewEmpState extends State<AddnewEmp> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
+  int currentStep = 0;
 
   // Controllers
   final TextEditingController _empId = TextEditingController();
@@ -137,30 +138,6 @@ class _AddnewEmpState extends State<AddnewEmp> {
     } while (existingIds.contains(newId));
 
     return newId;
-  }
-
-  Stream<QuerySnapshot> getSectionsStream(String? branch) {
-    if (branch == null || branch.isEmpty) {
-      return const Stream.empty();
-    }
-    return FirebaseFirestore.instance
-        .collection('works')
-        .where('branch', isEqualTo: branch)
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot> getWorkNamesStream(String? branch, String? section) {
-    if (branch == null ||
-        branch.isEmpty ||
-        section == null ||
-        section.isEmpty) {
-      return const Stream.empty();
-    }
-    return FirebaseFirestore.instance
-        .collection('works')
-        .where('branch', isEqualTo: branch)
-        .where('section', isEqualTo: section)
-        .snapshots();
   }
 
   @override
@@ -312,13 +289,13 @@ class _AddnewEmpState extends State<AddnewEmp> {
           'accName': _accname.text.trim(),
           'accNumber': _accnumber.text.trim(),
           'baseSal': _basesal.text.trim(),
-          'createdAt': FieldValue.serverTimestamp(), // Add timestamp
+          'createdAt': FieldValue.serverTimestamp(),
         };
 
         // Add to Firestore
         await FirebaseFirestore.instance
             .collection('employees')
-            .doc(_empId.text.trim()) // Use empId as document ID
+            .doc(_empId.text.trim())
             .set(empData);
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -349,11 +326,16 @@ class _AddnewEmpState extends State<AddnewEmp> {
         _accname.clear();
         _accnumber.clear();
         _basesal.clear();
+
+        // Reset to first step
+        setState(() {
+          currentStep = 0;
+        });
       } on FormatException catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'ទំរង់កាលបរិច្ឆេទមិនត្រឹមត្រូវ: ${e.message}',
+              'ទំរង់កាលបរិច្ឆេទមិនត្រឹមត្រូវ',
               style: const TextStyle(fontSize: 16),
             ),
             backgroundColor: Colors.red,
@@ -405,241 +387,294 @@ class _AddnewEmpState extends State<AddnewEmp> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
-                const Text(
-                  'ព័ត៌មានការងារ',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(height: 10),
-                CustomDropdownList(
-                  label: 'ទីតាំងការងារ(សាខា)',
-                  items: const [
-                    'បន្ទាយមានជ័យ',
-                    'បាត់ដំបង',
-                    'កំពង់ចាម',
-                    'កំពង់ឆ្នាំង',
-                    'កំពង់ស្ពឺ',
-                    'កំពង់ធំ',
-                    'កំពត',
-                    'កណ្ដាល',
-                    'កោះកុង',
-                    'ក្រចេះ',
-                    'មណ្ឌលគិរី',
-                    'ភ្នំពេញ',
-                    'ព្រះវិហារ',
-                    'ព្រៃវែង',
-                    'ពោធិ៍សាត់',
-                    'រតនគិរី',
-                    'សៀមរាប',
-                    'ព្រះសីហនុ',
-                    'ស្ទឹងត្រែង',
-                    'ស្វាយរៀង',
-                    'តាកែវ',
-                    'ឧត្តរមានជ័យ',
-                    'ប៉ៃលិន',
-                    'ត្បូងឃ្មុំ',
+                // Work Info (Step 0)
+                if (currentStep == 0) ...[
+                  const SizedBox(height: 20),
+                  const Text(
+                    'ព័ត៌មានការងារ',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 10),
+                  CustomDropdownList(
+                    label: 'ទីតាំងការងារ(សាខា)',
+                    items: const [
+                      'បន្ទាយមានជ័យ',
+                      'បាត់ដំបង',
+                      'កំពង់ចាម',
+                      'កំពង់ឆ្នាំង',
+                      'កំពង់ស្ពឺ',
+                      'កំពង់ធំ',
+                      'កំពត',
+                      'កណ្ដាល',
+                      'កោះកុង',
+                      'ក្រចេះ',
+                      'មណ្ឌលគិរី',
+                      'ភ្នំពេញ',
+                      'ព្រះវិហារ',
+                      'ព្រៃវែង',
+                      'ពោធិ៍សាត់',
+                      'រតនគិរី',
+                      'សៀមរាប',
+                      'ព្រះសីហនុ',
+                      'ស្ទឹងត្រែង',
+                      'ស្វាយរៀង',
+                      'តាកែវ',
+                      'ឧត្តរមានជ័យ',
+                      'ប៉ៃលិន',
+                      'ត្បូងឃ្មុំ',
+                    ],
+                    hint: 'សូមជ្រើសរើស',
+                    controller: _branch,
+                    icon: Icons.arrow_drop_down,
+                    onChanged: (items) {
+                      if (items != null) {
+                        setState(() {
+                          _branch.text = items;
+                        });
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  CustomDropdownList(
+                    label: 'ផ្នែកការងារ',
+                    items: sectionItems,
+                    hint:
+                        _branch.text.isEmpty
+                            ? 'សូមជ្រើសរើសសាខាជាមុនសិន'
+                            : 'ជ្រើសរើសផ្នែក',
+                    controller: _section,
+                    icon: Icons.arrow_drop_down,
+                    onChanged: (items) {
+                      if (items != null) {
+                        setState(() {
+                          _section.text = items;
+                        });
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  CustomDropdownList(
+                    label: 'មុខងារ',
+                    items: workNameItems,
+                    hint:
+                        _section.text.isEmpty
+                            ? 'សូមជ្រើសរើសផ្នែកជាមុនសិន'
+                            : 'ជ្រើសរើសមុខងារ',
+                    controller: _workname,
+                    icon: Icons.arrow_drop_down,
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _workname.text = value;
+                        });
+                      }
+                    },
+                  ),
+                ],
+
+                // Personal Info (Step 1)
+                if (currentStep == 1) ...[
+                  const SizedBox(height: 20),
+                  const Text(
+                    'ព័ត៌មានបុគ្គលិក',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 10),
+                  CustomDropdownList(
+                    label: 'លេខសម្គាល់បុគ្គលិក',
+                    items: empIdItems,
+                    hint: _workname.text.isEmpty ? 'លេខសម្គាល់' : 'លេខសម្គាល់',
+                    icon: Icons.arrow_drop_down,
+                    controller: _empId,
+                    onChanged: (value) {
+                      if (value != null) {
+                        _empId.text = value;
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextField(
+                    label: 'ឈ្មោះពេញ',
+                    hint: '',
+                    icon: const Icon(Boxicons.bx_credit_card),
+                    keyboardType: TextInputType.text,
+                    lendingIcon: false,
+                    controller: _fullname,
+                  ),
+                  const SizedBox(height: 10),
+                  CustomDropdownList(
+                    label: 'ភេទ',
+                    items: const ['ប្រុស', 'ស្រី'],
+                    hint: '',
+                    icon: Icons.arrow_drop_down,
+                    controller: _gender,
+                    onChanged: (value) {},
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextField(
+                    label: 'ថ្ងៃខែឆ្នាំកំណើត',
+                    hint: '',
+                    icon: const Icon(Boxicons.bx_credit_card),
+                    isDate: true,
+                    controller: _dob,
+                    lendingIcon: false,
+                    keyboardType: TextInputType.text,
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextField(
+                    label: 'លេខទូរស័ព្ទ',
+                    hint: '',
+                    icon: const Icon(Boxicons.bx_credit_card),
+                    keyboardType: TextInputType.number,
+                    lendingIcon: false,
+                    controller: _phone,
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextField(
+                    label: 'អ៊ីម៊ែល',
+                    hint: '',
+                    icon: const Icon(Boxicons.bx_credit_card),
+                    keyboardType: TextInputType.emailAddress,
+                    lendingIcon: false,
+                    controller: _email,
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextField(
+                    label: 'លេខអត្តសញ្ញាណប័ណ្ណ',
+                    hint: '',
+                    icon: const Icon(Boxicons.bx_credit_card),
+                    keyboardType: TextInputType.number,
+                    lendingIcon: false,
+                    controller: _nationalId,
+                  ),
+                  const SizedBox(height: 10),
+                  CustomDropdownList(
+                    label: 'ប្រភេទបុគ្គលិក',
+                    items: const ['កិច្ចសន្យា', 'ពេញម៉ោង', 'ក្រៅម៉ោង'],
+                    hint: '',
+                    icon: Icons.arrow_drop_down,
+                    controller: _typeemp,
+                    onChanged: (value) {},
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextField(
+                    label: 'អាសយដ្ឋាន',
+                    hint: '',
+                    icon: const Icon(Boxicons.bx_credit_card),
+                    keyboardType: TextInputType.text,
+                    lendingIcon: false,
+                    controller: _address,
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextField(
+                    label: 'ថ្ងៃចូលបំរើការងារ',
+                    hint: '',
+                    icon: const Icon(Boxicons.bx_credit_card),
+                    isDate: true,
+                    controller: _startDate,
+                    keyboardType: TextInputType.text,
+                    lendingIcon: false,
+                  ),
+                ],
+
+                // Salary Info (Step 2)
+                if (currentStep == 2) ...[
+                  const SizedBox(height: 20),
+                  const Text(
+                    'ព័ត៌មានប្រាក់ឈ្នួល',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 10),
+                  CustomDropdownList(
+                    label: 'បើកប្រាក់ដោយ',
+                    items: const ['សាច់ប្រាក់', 'ធនាគារ'],
+                    hint: '',
+                    icon: Icons.arrow_drop_down,
+                    controller: _paidby,
+                    onChanged: (value) {
+                      setState(() {
+                        _paidby.text = value ?? '';
+                        if (_paidby.text == 'សាច់ប្រាក់') {
+                          _accname.clear();
+                          _accnumber.clear();
+                        }
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  if (_paidby.text == 'ធនាគារ') ...[
+                    CustomTextField(
+                      label: 'ឈ្មោះគណនីធនាគារ',
+                      hint: '',
+                      icon: const Icon(Boxicons.bx_credit_card),
+                      keyboardType: TextInputType.text,
+                      lendingIcon: false,
+                      controller: _accname,
+                    ),
+                    const SizedBox(height: 10),
+                    CustomTextField(
+                      label: 'លេខគណនីធនាគារ',
+                      hint: '',
+                      icon: const Icon(Boxicons.bx_credit_card),
+                      keyboardType: TextInputType.number,
+                      lendingIcon: false,
+                      controller: _accnumber,
+                    ),
+                    const SizedBox(height: 10),
                   ],
-                  hint: 'សូមជ្រើសរើស',
-                  controller: _branch,
-                  icon: Icons.arrow_drop_down,
-                  onChanged: (items) {
-                    if (items != null) {
-                      setState(() {
-                        _branch.text = items;
-                      });
-                    }
-                  },
-                ),
-                const SizedBox(height: 10),
-                CustomDropdownList(
-                  label: 'ផ្នែកការងារ',
-                  items: sectionItems,
-                  hint:
-                      _branch.text.isEmpty
-                          ? 'សូមជ្រើសរើសសាខាជាមុនសិន'
-                          : 'ជ្រើសរើសផ្នែក',
-                  controller: _section,
-                  icon: Icons.arrow_drop_down,
-                  onChanged: (items) {
-                    if (items != null) {
-                      setState(() {
-                        _section.text = items;
-                      });
-                    }
-                  },
-                ),
-                const SizedBox(height: 10),
-                CustomDropdownList(
-                  label: 'មុខងារ',
-                  items: workNameItems,
-                  hint:
-                      _section.text.isEmpty
-                          ? 'សូមជ្រើសរើសផ្នែកជាមុនសិន'
-                          : 'ជ្រើសរើសមុខងារ',
-                  controller: _workname,
-                  icon: Icons.arrow_drop_down,
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        _workname.text = value;
-                      });
-                    }
-                  },
-                ),
+                  const SizedBox(height: 10),
+                  CustomTextField(
+                    label: 'ប្រាក់ខែគោល',
+                    hint: '',
+                    icon: const Icon(Boxicons.bx_credit_card),
+                    keyboardType: TextInputType.number,
+                    lendingIcon: false,
+                    controller: _basesal,
+                  ),
+                ],
 
-                const SizedBox(height: 20),
-                const Text(
-                  'ព័ត៌មានបុគ្គលិក',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(height: 10),
-                CustomDropdownList(
-                  label: 'លេខសម្គាល់បុគ្គលិក',
-                  items: empIdItems,
-                  hint: _workname.text.isEmpty ? 'លេខសម្គាល់' : 'លេខសម្គាល់',
-                  icon: Icons.arrow_drop_down,
-
-                  controller: _empId,
-                  onChanged: (value) {
-                    if (value != null) {
-                      _empId.text = value;
-                    }
-                  },
-                ),
-                const SizedBox(height: 10),
-                CustomTextField(
-                  label: 'ឈ្មោះពេញ',
-                  hint: '',
-                  icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.text,
-                  lendingIcon: false,
-                  controller: _fullname,
-                ),
-                const SizedBox(height: 10),
-                CustomDropdownList(
-                  label: 'ភេទ',
-                  items: const ['ប្រុស', 'ស្រី'],
-                  hint: '',
-                  icon: Icons.arrow_drop_down,
-                  controller: _gender,
-                  onChanged: (value) {},
-                ),
-                const SizedBox(height: 10),
-                CustomTextField(
-                  label: 'ថ្ងៃខែឆ្នាំកំណើត',
-                  hint: '',
-                  icon: const Icon(Boxicons.bx_credit_card),
-                  isDate: true,
-                  controller: _dob,
-                  lendingIcon: false,
-                  keyboardType: TextInputType.text,
-                ),
-                const SizedBox(height: 10),
-                CustomTextField(
-                  label: 'លេខទូរស័ព្ទ',
-                  hint: '',
-                  icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.number,
-                  lendingIcon: false,
-                  controller: _phone,
-                ),
-                const SizedBox(height: 10),
-                CustomTextField(
-                  label: 'អ៊ីម៊ែល',
-                  hint: '',
-                  icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.emailAddress,
-                  lendingIcon: false,
-                  controller: _email,
-                ),
-                const SizedBox(height: 10),
-                CustomTextField(
-                  label: 'លេខអត្តសញ្ញាណប័ណ្ណ',
-                  hint: '',
-                  icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.number,
-                  lendingIcon: false,
-                  controller: _nationalId,
-                ),
-                const SizedBox(height: 10),
-                CustomDropdownList(
-                  label: 'ប្រភេទបុគ្គលិក',
-                  items: const ['កិច្ចសន្យា', 'ពេញម៉ោង', 'ក្រៅម៉ោង'],
-                  hint: '',
-                  icon: Icons.arrow_drop_down,
-                  controller: _typeemp,
-                  onChanged: (value) {},
-                ),
-                const SizedBox(height: 10),
-                CustomTextField(
-                  label: 'អាសយដ្ឋាន',
-                  hint: '',
-                  icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.text,
-                  lendingIcon: false,
-                  controller: _address,
-                ),
-                const SizedBox(height: 10),
-                CustomTextField(
-                  label: 'ថ្ងៃចូលបំរើការងារ',
-                  hint: '',
-                  icon: const Icon(Boxicons.bx_credit_card),
-                  isDate: true,
-                  controller: _startDate,
-                  keyboardType: TextInputType.text,
-                  lendingIcon: false,
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'ព័ត៌មានប្រាក់ឈ្នួល',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(height: 10),
-                CustomDropdownList(
-                  label: 'បើកប្រាក់ដោយ',
-                  items: const ['សាច់ប្រាក់', 'ធនាគារ'],
-                  hint: '',
-                  icon: Icons.arrow_drop_down,
-                  controller: _paidby,
-                  onChanged: (value) {},
-                ),
-                const SizedBox(height: 10),
-                CustomTextField(
-                  label: 'ឈ្មោះគណនីធនាគារ',
-                  hint: 'អាចរំលង',
-                  icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.text,
-                  lendingIcon: false,
-                  controller: _accname,
-                ),
-                const SizedBox(height: 10),
-                CustomTextField(
-                  label: 'លេខគណនីធនាគារ',
-                  hint: 'អាចរំលង',
-                  icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.number,
-                  lendingIcon: false,
-                  controller: _accnumber,
-                ),
-                const SizedBox(height: 10),
-                CustomTextField(
-                  label: 'ប្រាក់ខែគោល',
-                  hint: '',
-                  icon: const Icon(Boxicons.bx_credit_card),
-                  keyboardType: TextInputType.number,
-                  lendingIcon: false,
-                  controller: _basesal,
-                ),
                 const SizedBox(height: 40),
-                CustomButton(
-                  color: Colors.blue,
-                  width: MediaQuery.of(context).size.width,
-                  height: 50,
-                  isLoading: isLoading,
-                  text: "បញ្ជូន",
-                  onPressed: addEmployee,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (currentStep > 0)
+                      Expanded(
+                        child: CustomButton(
+                          color: Colors.grey,
+                          width: double.infinity,
+                          height: 50,
+                          text: "ថយក្រោយ",
+                          onPressed: () {
+                            setState(() {
+                              currentStep--;
+                            });
+                          },
+                          isLoading: false,
+                        ),
+                      ),
+                    if (currentStep > 0)
+                      const SizedBox(width: 10), // spacing between buttons
+                    Expanded(
+                      child: CustomButton(
+                        color: Colors.blue,
+                        width: double.infinity,
+                        height: 50,
+                        isLoading: isLoading,
+                        text: currentStep < 2 ? "បន្ត" : "បញ្ជូន",
+                        onPressed: () {
+                          if (currentStep < 2) {
+                            setState(() {
+                              currentStep++;
+                            });
+                          } else {
+                            addEmployee();
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
               ],
             ),
           ),

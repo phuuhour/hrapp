@@ -68,7 +68,7 @@ class _PayrollManageState extends State<PayrollManage> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.history, color: Colors.white, size: 20),
+            icon: Icon(Icons.refresh, color: Colors.white, size: 20),
             onPressed: () {
               setState(() {});
             },

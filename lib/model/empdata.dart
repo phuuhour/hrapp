@@ -44,20 +44,26 @@ class EmpData {
       empId: map['empId'] ?? '',
       fullname: map['fullname'] ?? '',
       gender: map['gender'] ?? '',
-      dob: (map['dob'] as Timestamp).toDate(),
+      dob:
+          map['dob'] != null
+              ? (map['dob'] as Timestamp).toDate()
+              : DateTime(2000),
       phone: map['phone'] ?? '',
       email: map['email'] ?? '',
       nationalId: map['nationalId'] ?? '',
       typeEmp: map['typeEmp'] ?? '',
       address: map['address'] ?? '',
-      startDate: (map['startDate'] as Timestamp).toDate(),
+      startDate:
+          map['startDate'] != null
+              ? (map['startDate'] as Timestamp).toDate()
+              : DateTime.now(),
       branch: map['branch'] ?? '',
       section: map['section'] ?? '',
       workname: map['workname'] ?? '',
       paidBy: map['paidBy'] ?? '',
       accName: map['accName'] ?? '',
       accNumber: map['accNumber'] ?? '',
-      baseSal: map['baseSal'] ?? '',
+      baseSal: map['baseSal']?.toString() ?? '',
     );
   }
 }

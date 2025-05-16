@@ -3,6 +3,7 @@
 import 'package:boxicons/boxicons.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hr/model/empaccount.dart';
 import 'package:hr/model/empdata.dart';
 import 'package:hr/widget/Button.dart';
 import 'package:hr/widget/Dropdownlist.dart';
@@ -177,16 +178,18 @@ class _CreateAccState extends State<CreateAcc> {
                     return;
                   }
 
+                  final empAccount = EmpAccount(
+                    empId: selectedEmpId!,
+                    fullname: fullnameController.text,
+                    phone: phoneController.text,
+                    password: passwordController.text,
+                    createdAt: FieldValue.serverTimestamp() as Timestamp?,
+                  );
+
                   await FirebaseFirestore.instance
                       .collection('empacc')
                       .doc(selectedEmpId)
-                      .set({
-                        'empId': selectedEmpId,
-                        'fullname': fullnameController.text,
-                        'phone': phoneController.text,
-                        'password': passwordController.text,
-                        'createdAt': FieldValue.serverTimestamp(),
-                      });
+                      .set(empAccount.toMap());
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
