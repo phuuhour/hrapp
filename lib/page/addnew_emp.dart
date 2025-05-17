@@ -331,7 +331,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
         setState(() {
           currentStep = 0;
         });
-      } on FormatException catch (e) {
+      } on FormatException {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
