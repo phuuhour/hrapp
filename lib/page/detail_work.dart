@@ -5,7 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 class DetailWork extends StatefulWidget {
-  const DetailWork({super.key, required this.workData});
+  const DetailWork({super.key, required this.workData, required String workId});
 
   final Map<String, dynamic> workData;
 
@@ -31,16 +31,17 @@ class _DetailWorkState extends State<DetailWork> {
   Widget build(BuildContext context) {
     initializeDateFormatting('km', null);
     return Scaffold(
+      backgroundColor: Color.fromARGB(245, 250, 250, 250),
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.black45, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           widget.workData['workName'] ?? 'ព័ត៌មានការងារ',
-          style: TextStyle(fontSize: 18, color: Colors.white),
+          style: TextStyle(fontSize: 16),
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.white,
         elevation: 0,
         actions: [
           IconButton(
@@ -100,60 +101,80 @@ class _DetailWorkState extends State<DetailWork> {
                 },
               );
             },
-            icon: Icon(Boxicons.bxs_trash, color: Colors.white, size: 20),
+            icon: Icon(Boxicons.bxs_trash, color: Colors.red[400], size: 20),
           ),
         ],
       ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 10),
-              ListTile(
-                title: Text('លេខសម្គាល់ការងារ'),
-                trailing: Text(
-                  widget.workData['workId'] ?? '-',
-                  style: TextStyle(fontSize: 15),
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  left: 10,
+                  right: 10,
+                  bottom: 5,
                 ),
-              ),
-              ListTile(
-                title: Text('ផ្នែក'),
-                trailing: Text(
-                  widget.workData['section'] ?? '-',
-                  style: TextStyle(fontSize: 15),
-                ),
-              ),
-              ListTile(
-                title: Text('ឈ្មោះការងារ'),
-                trailing: Text(
-                  widget.workData['workName'] ?? '-',
-                  style: TextStyle(fontSize: 15),
-                ),
-              ),
-              ListTile(
-                title: Text('ថ្ងៃចាប់ផ្តើម'),
-                trailing: Text(
-                  widget.workData['date'] != null
-                      ? ' ${DateFormat('dd MMM yyyy', 'km').format(DateTime.parse(widget.workData['date']))}'
-                      : '-',
-                  style: TextStyle(fontSize: 15),
-                ),
-              ),
-              ListTile(
-                title: Text('ទីតាំងការងារ(សាខា)'),
-                trailing: Text(
-                  widget.workData['branch'] ?? '-',
-                  style: TextStyle(fontSize: 15),
-                ),
-              ),
-              ListTile(
-                title: Text('ប្រាក់បៀវត្ស'),
-                trailing: Text(
-                  widget.workData['payroll'] != null
-                      ? '\$${widget.workData['payroll'].toStringAsFixed(2)}'
-                      : '-',
-                  style: TextStyle(fontSize: 15),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          title: Text('លេខសម្គាល់ការងារ'),
+                          trailing: Text(
+                            widget.workData['workId'] ?? '-',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text('ផ្នែក'),
+                          trailing: Text(
+                            widget.workData['section'] ?? '-',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text('ឈ្មោះការងារ'),
+                          trailing: Text(
+                            widget.workData['workName'] ?? '-',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text('ថ្ងៃចាប់ផ្តើម'),
+                          trailing: Text(
+                            widget.workData['date'] != null
+                                ? ' ${DateFormat('dd MMM yyyy', 'km').format(DateTime.parse(widget.workData['date']))}'
+                                : '-',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text('ទីតាំងការងារ(សាខា)'),
+                          trailing: Text(
+                            widget.workData['branch'] ?? '-',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text('ប្រាក់បៀវត្ស'),
+                          trailing: Text(
+                            widget.workData['payroll'] != null
+                                ? '\$${widget.workData['payroll'].toStringAsFixed(2)}'
+                                : '-',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],

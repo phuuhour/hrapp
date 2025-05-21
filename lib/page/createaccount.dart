@@ -72,160 +72,188 @@ class _CreateAccState extends State<CreateAcc> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(245, 250, 250, 250),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new,
-            color: Colors.white,
+            color: Colors.black45,
             size: 20,
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'បង្កើតគណនីបុគ្គលិក',
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ),
-        backgroundColor: Colors.teal,
+        title: const Text('បង្កើតគណនីបុគ្គលិក', style: TextStyle(fontSize: 16)),
+        backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            CustomDropdownList(
-              label: 'ឈ្មោះបុគ្គលិក',
-              items: fullnameItems,
-              hint: 'សូមជ្រើសរើសឈ្មោះ',
-              icon: Icons.arrow_drop_down,
-              controller: fullnameController,
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    fullnameController.text = value;
-                    phoneController.text =
-                        employees
-                            .firstWhere((emp) => emp.fullname == value)
-                            .phone;
-                    selectedEmpId = fullnameToEmpId[value];
-                  });
-                }
-              },
-            ),
-            const SizedBox(height: 10),
-
-            CustomTextField(
-              label: "លេខទូរស័ព្ទ",
-              hint: '0123xxxxxx',
-              icon: const Icon(Icons.phone),
-              lendingIcon: false,
-              keyboardType: TextInputType.phone,
-              controller: phoneController,
-            ),
-
-            const SizedBox(height: 10),
-
-            CustomTextField(
-              label: "ពាក្យសម្ងាត់ថ្មី",
-              isPassword: true,
-              hint: 'បញ្ចូលពាក្យសម្ងាត់',
-              icon: const Icon(Boxicons.bxs_lock),
-              lendingIcon: false,
-              keyboardType: TextInputType.text,
-              controller: passwordController,
-            ),
-            const SizedBox(height: 10),
-
-            const SizedBox(height: 40),
-
-            CustomButton(
-              color: Colors.teal,
-              width: MediaQuery.of(context).size.width,
-              height: 50,
-              isLoading: isLoading,
-              text: 'បង្កើតគណនី',
-              onPressed: () async {
-                if (fullnameController.text.isEmpty ||
-                    phoneController.text.isEmpty ||
-                    passwordController.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('សូមបំពេញព័ត៌មានចាំបាច់'),
-                      backgroundColor: Colors.teal,
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Flexible(
+                    child: Text(
+                      "នៅពេលដែលគណនីត្រូវបានបង្កើត បុគ្គលិកអាចចូលប្រើកម្មវិធីបាន។",
+                      overflow: TextOverflow.visible,
+                      maxLines: 2,
+                      softWrap: true,
                     ),
-                  );
-                  return;
-                }
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 10),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  CustomDropdownList(
+                    label: 'ឈ្មោះបុគ្គលិក',
+                    items: fullnameItems,
+                    hint: 'សូមជ្រើសរើសឈ្មោះ',
+                    icon: Icons.arrow_drop_down,
+                    controller: fullnameController,
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          fullnameController.text = value;
+                          phoneController.text =
+                              employees
+                                  .firstWhere((emp) => emp.fullname == value)
+                                  .phone;
+                          selectedEmpId = fullnameToEmpId[value];
+                        });
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  CustomTextField(
+                    label: "លេខទូរស័ព្ទ",
+                    hint: '0123xxxxxx',
+                    icon: const Icon(Icons.phone),
+                    lendingIcon: false,
+                    keyboardType: TextInputType.phone,
+                    controller: phoneController,
+                  ),
+                  const SizedBox(height: 15),
+                  CustomTextField(
+                    label: "ពាក្យសម្ងាត់ថ្មី",
+                    isPassword: true,
+                    hint: 'បញ្ចូលពាក្យសម្ងាត់',
+                    icon: const Icon(Boxicons.bxs_lock),
+                    lendingIcon: false,
+                    keyboardType: TextInputType.text,
+                    controller: passwordController,
+                  ),
+                  const SizedBox(height: 50),
+                  CustomButton(
+                    color: Colors.blue,
+                    width: double.infinity,
+                    height: 50,
+                    isLoading: isLoading,
+                    text: 'បង្កើតគណនី',
+                    onPressed: () async {
+                      if (fullnameController.text.isEmpty ||
+                          phoneController.text.isEmpty ||
+                          passwordController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('សូមបំពេញព័ត៌មានចាំបាច់'),
+                            backgroundColor: Colors.teal,
+                          ),
+                        );
+                        return;
+                      }
 
-                if (selectedEmpId == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('សូមជ្រើសរើសបុគ្គលិក')),
-                  );
-                  return;
-                }
+                      if (selectedEmpId == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('សូមជ្រើសរើសបុគ្គលិក')),
+                        );
+                        return;
+                      }
 
-                setState(() => isLoading = true);
+                      setState(() => isLoading = true);
 
-                try {
-                  final isUnique = await _isPhoneUnique(phoneController.text);
-                  if (!isUnique) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('លេខទូរស័ព្ទនេះបានប្រើរួចហើយ'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                    setState(() => isLoading = false);
-                    return;
-                  }
+                      try {
+                        final isUnique = await _isPhoneUnique(
+                          phoneController.text,
+                        );
+                        if (!isUnique) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('លេខទូរស័ព្ទនេះបានប្រើរួចហើយ'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          setState(() => isLoading = false);
+                          return;
+                        }
 
-                  // Check if empId already has an account
-                  final existingAcc =
-                      await FirebaseFirestore.instance
-                          .collection('empacc')
-                          .doc(selectedEmpId)
-                          .get();
-                  if (existingAcc.exists) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('បុគ្គលិកនេះមានគណនីរួចហើយ'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                    setState(() => isLoading = false);
-                    return;
-                  }
+                        // Check if empId already has an account
+                        final existingAcc =
+                            await FirebaseFirestore.instance
+                                .collection('empacc')
+                                .doc(selectedEmpId)
+                                .get();
+                        if (existingAcc.exists) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('បុគ្គលិកនេះមានគណនីរួចហើយ'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          setState(() => isLoading = false);
+                          return;
+                        }
 
-                  final empAccount = EmpAccount(
-                    empId: selectedEmpId!,
-                    fullname: fullnameController.text,
-                    phone: phoneController.text,
-                    password: passwordController.text,
-                  );
+                        final empAccount = EmpAccount(
+                          empId: selectedEmpId!,
+                          fullname: fullnameController.text,
+                          phone: phoneController.text,
+                          password: passwordController.text,
+                        );
 
-                  final data = empAccount.toMap();
-                  data['createdAt'] = FieldValue.serverTimestamp();
+                        final data = empAccount.toMap();
+                        data['createdAt'] = FieldValue.serverTimestamp();
 
-                  await FirebaseFirestore.instance
-                      .collection('empacc')
-                      .doc(selectedEmpId)
-                      .set(data);
+                        await FirebaseFirestore.instance
+                            .collection('empacc')
+                            .doc(selectedEmpId)
+                            .set(data);
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('គណនីត្រូវបានបង្កើតដោយជោគជ័យ'),
-                      backgroundColor: Colors.teal,
-                    ),
-                  );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('គណនីត្រូវបានបង្កើតដោយជោគជ័យ'),
+                            backgroundColor: Colors.teal,
+                          ),
+                        );
 
-                  _clearFields();
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('កំហុស: ${e.toString()}')),
-                  );
-                } finally {
-                  setState(() => isLoading = false);
-                }
-              },
+                        _clearFields();
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('កំហុស: ${e.toString()}')),
+                        );
+                      } finally {
+                        setState(() => isLoading = false);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
             ),
           ],
         ),

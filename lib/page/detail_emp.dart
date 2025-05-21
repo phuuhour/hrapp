@@ -87,20 +87,14 @@ class _DetailEmpState extends State<DetailEmp> {
   Widget build(BuildContext context) {
     initializeDateFormatting('km', null);
     return Scaffold(
+      backgroundColor: Color.fromARGB(245, 250, 250, 250),
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new,
-            color: Colors.white,
-            size: 20,
-          ),
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.black45, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'ព័ត៌មានបុគ្គលិក',
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ),
-        backgroundColor: Colors.blue,
+        title: Text('ព័មានបុគ្គលិក', style: TextStyle(fontSize: 16)),
+        backgroundColor: Colors.white,
         elevation: 0,
         actions: [
           IconButton(
@@ -150,7 +144,7 @@ class _DetailEmpState extends State<DetailEmp> {
                 },
               );
             },
-            icon: const Icon(Boxicons.bxs_trash, color: Colors.white, size: 20),
+            icon: Icon(Boxicons.bxs_trash, color: Colors.red[400], size: 20),
           ),
         ],
       ),

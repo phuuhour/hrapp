@@ -57,14 +57,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Text(
-        //   widget.label,
-        //   style: const TextStyle(
-        //     fontSize: 14,
-        //     fontWeight: FontWeight.w500,
-        //     color: Colors.black,
-        //   ),
-        // ),
         TextField(
           controller: widget.controller,
           obscureText: widget.isPassword ? _obscureText : false,

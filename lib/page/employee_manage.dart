@@ -15,19 +15,18 @@ class EmployeeManage extends StatefulWidget {
 }
 
 class _EmployeeManageState extends State<EmployeeManage> {
-  Future<Map<String, int>> getEmpCount() async {
-    final QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('employees').get();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
-    final empCount = <String, int>{};
-
-    for (var doc in snapshot.docs) {
-      final workName =
-          (doc.data() as Map<String, dynamic>)['empId'] ?? 'Unknown';
-      empCount[workName] = (empCount[workName] ?? 0) + 1;
+  Future<QuerySnapshot> searchEmployees(String query) {
+    if (query.isEmpty) {
+      return FirebaseFirestore.instance.collection('employees').get();
     }
-
-    return empCount;
+    return FirebaseFirestore.instance
+        .collection('employees')
+        .where('fullname', isGreaterThanOrEqualTo: query)
+        .where('fullname', isLessThanOrEqualTo: '$query\uf8ff')
+        .get();
   }
 
   @override
@@ -49,7 +48,12 @@ class _EmployeeManageState extends State<EmployeeManage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                top: 10,
+                left: 10,
+                right: 10,
+                bottom: 5,
+              ),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -102,7 +106,10 @@ class _EmployeeManageState extends State<EmployeeManage> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -114,65 +121,21 @@ class _EmployeeManageState extends State<EmployeeManage> {
                     ),
                     child: Column(
                       children: [
-                        FutureBuilder<Map<String, int>>(
-                          future: getEmpCount(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return ListTile(
-                                contentPadding: EdgeInsets.only(left: 0),
-                                title: Text('បុគ្គលិកសរុប'),
-                                subtitle: Text('...'),
-                                onTap: () {},
-                              );
-                            } else {
-                              final empCounts = snapshot.data ?? {};
-                              final totalCount = empCounts.values.fold(
-                                0,
-                                // ignore: avoid_types_as_parameter_names
-                                (sum, count) => sum + count,
-                              );
-                              return ListTile(
-                                title: Text('បុគ្គលិកសរុប'),
-                                contentPadding: EdgeInsets.only(
-                                  left: 0,
-                                  right: 0,
-                                ),
-                                trailing: IconButton(
-                                  onPressed: () {
-                                    setState(() {});
-                                  },
-                                  icon: Icon(
-                                    Boxicons.bx_refresh,
-                                    color: Colors.blue,
-                                    size: 28,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  '$totalCount នាក់',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                      builder: (context) => EmployeeManage(),
-                                    ),
-                                  );
-                                },
-                              );
-                            }
+                        TextField(
+                          decoration: InputDecoration(
+                            hintText: 'ស្វែងរកបុគ្គលិក',
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              searchEmployees(value);
+                              _searchQuery = value;
+                            });
                           },
+                          controller: _searchController,
                         ),
-                        Divider(),
+                        SizedBox(height: 10),
                         FutureBuilder<QuerySnapshot>(
-                          future:
-                              FirebaseFirestore.instance
-                                  .collection('employees')
-                                  .get(),
+                          future: searchEmployees(_searchQuery),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -196,7 +159,7 @@ class _EmployeeManageState extends State<EmployeeManage> {
                               final employees = snapshot.data?.docs ?? [];
 
                               if (employees.isEmpty) {
-                                return Center(child: Text('មិនមានបុគ្គលិកទេ'));
+                                return Center(child: Text('រកមិនឃើញ'));
                               }
 
                               return Column(
@@ -228,6 +191,7 @@ class _EmployeeManageState extends State<EmployeeManage> {
                                     },
                                     leading: CircleAvatar(
                                       radius: 25,
+                                      backgroundColor: Colors.transparent,
                                       backgroundImage: AssetImage(
                                         'assets/images/profile.png',
                                       ),

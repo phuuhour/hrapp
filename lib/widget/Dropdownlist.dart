@@ -9,7 +9,7 @@ class CustomDropdownList extends StatefulWidget {
   final IconData icon;
   final TextEditingController? controller;
   final Color color;
-  final void Function(String?) onChanged; // ✅ Fix here
+  final void Function(String?) onChanged;
 
   const CustomDropdownList({
     super.key,
@@ -19,7 +19,7 @@ class CustomDropdownList extends StatefulWidget {
     required this.icon,
     this.controller,
     this.color = const Color.fromARGB(255, 255, 255, 255),
-    required this.onChanged, // ✅ Save to use later
+    required this.onChanged,
   });
 
   @override
@@ -38,23 +38,16 @@ class _CustomDropdownListState extends State<CustomDropdownList> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.label,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-          ),
-        ),
         DropdownButtonFormField<String>(
           value: currentValue,
           hint: Text(widget.hint),
-          icon: Icon(widget.icon, color: Colors.black45),
+          icon: Icon(widget.icon, color: Colors.blue),
           decoration: InputDecoration(
             filled: true,
-            fillColor: Colors.grey.withOpacity(0.15),
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.blue, width: 2),
+            fillColor: Colors.blue.withOpacity(0.15),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: BorderSide.none,
             ),
           ),
           items:
@@ -69,7 +62,7 @@ class _CustomDropdownListState extends State<CustomDropdownList> {
               if (widget.controller != null) {
                 widget.controller!.text = newValue ?? '';
               }
-              widget.onChanged(newValue); // ✅ Important
+              widget.onChanged(newValue);
             });
           },
         ),

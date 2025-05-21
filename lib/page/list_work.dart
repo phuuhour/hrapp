@@ -16,85 +16,137 @@ class _ListWorkState extends State<ListWork> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(245, 250, 250, 250),
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.black45, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          widget.sectionTitle,
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ),
-        backgroundColor: Colors.green,
+        title: Text(widget.sectionTitle, style: TextStyle(fontSize: 16)),
+        backgroundColor: Colors.white,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh, color: Colors.white, size: 20),
-            onPressed: () {
-              setState(() {});
-            },
-          ),
-        ],
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: FutureBuilder<QuerySnapshot>(
-            future: FirebaseFirestore.instance.collection('works').get(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('មានបញ្ហាក្នុងការទាញយកទិន្នន័យ'));
-              } else {
-                final works = snapshot.data?.docs ?? [];
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  left: 10,
+                  right: 10,
+                  bottom: 5,
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                      children: [
+                        FutureBuilder<QuerySnapshot>(
+                          future:
+                              FirebaseFirestore.instance
+                                  .collection('works')
+                                  .get(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: SizedBox(
+                                  height: 35,
+                                  width: 50,
+                                  child: Center(
+                                    child: LinearProgressIndicator(
+                                      backgroundColor: Colors.white,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.blue,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                child: Text('មានបញ្ហាក្នុងការទាញយកទិន្នន័យ'),
+                              );
+                            } else {
+                              final works = snapshot.data?.docs ?? [];
 
-                // Filter works by selected section
-                final filteredWorks =
-                    works.where((work) {
-                      final data = work.data() as Map<String, dynamic>;
-                      return data['section'] == widget.sectionTitle;
-                    }).toList();
+                              final filteredWorks =
+                                  works.where((work) {
+                                    final data =
+                                        work.data() as Map<String, dynamic>;
+                                    return data['section'] ==
+                                        widget.sectionTitle;
+                                  }).toList();
 
-                if (filteredWorks.isEmpty) {
-                  return Center(child: Text('គ្មានការងារនៅក្នុងផ្នែកនេះទេ'));
-                }
+                              if (filteredWorks.isEmpty) {
+                                return Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Text(
+                                      'គ្មានការងារនៅក្នុងផ្នែកនេះទេ',
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                );
+                              }
 
-                return ListView(
-                  children:
-                      filteredWorks.map((work) {
-                        final data = work.data() as Map<String, dynamic>;
-                        final workName = data['workName'] ?? 'Unknown';
+                              return ListView(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                children:
+                                    filteredWorks.map((work) {
+                                      final data =
+                                          work.data() as Map<String, dynamic>;
+                                      final workName =
+                                          data['workName'] ?? 'Unknown';
 
-                        return ListTile(
-                          contentPadding: EdgeInsets.only(left: 0),
-                          title: Text(workName),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios,
-                            size: 20,
-                            color: Colors.black45,
-                          ),
-                          subtitle: Text(
-                            '${data['branch'] ?? ''}',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.black45,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder:
-                                    (context) => DetailWork(workData: data),
-                              ),
-                            );
+                                      return ListTile(
+                                        contentPadding: EdgeInsets.only(
+                                          left: 0,
+                                        ),
+                                        title: Text(workName),
+                                        trailing: Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 20,
+                                          color: Colors.black45,
+                                        ),
+                                        subtitle: Text(
+                                          '${data['branch'] ?? ''}',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.black45,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            CupertinoPageRoute(
+                                              builder:
+                                                  (context) => DetailWork(
+                                                    workData: data,
+                                                    workId: work.id,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    }).toList(),
+                              );
+                            }
                           },
-                        );
-                      }).toList(),
-                );
-              }
-            },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
