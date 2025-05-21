@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hr/page/addnew_emp.dart';
+import 'package:hr/page/createaccount.dart';
 import 'package:hr/page/detail_emp.dart';
-import 'package:hr/widget/ListTIle.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class EmployeeManage extends StatefulWidget {
@@ -19,124 +19,155 @@ class _EmployeeManageState extends State<EmployeeManage> {
     final QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('employees').get();
 
-    final EmpCount = <String, int>{};
+    final empCount = <String, int>{};
 
     for (var doc in snapshot.docs) {
       final workName =
           (doc.data() as Map<String, dynamic>)['empId'] ?? 'Unknown';
-      EmpCount[workName] = (EmpCount[workName] ?? 0) + 1;
+      empCount[workName] = (empCount[workName] ?? 0) + 1;
     }
 
-    return EmpCount;
+    return empCount;
   }
 
   @override
   Widget build(BuildContext context) {
     initializeDateFormatting('km', null);
-
     return Scaffold(
+      backgroundColor: Color.fromARGB(245, 250, 250, 250),
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.black45, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh, color: Colors.white, size: 20),
-            onPressed: () {
-              setState(() {});
-            },
-          ),
-        ],
-        title: Text(
-          'បញ្ជីឈ្មោះបុគ្គលិកទាំងអស់',
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ),
-        backgroundColor: Colors.blue,
+        title: Text('បុគ្គលិកទាំងអស់', style: TextStyle(fontSize: 16)),
+        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Card(
-                shape: Border.all(color: Colors.blue.withOpacity(0.5)),
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 25,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      FutureBuilder<Map<String, int>>(
-                        future: getEmpCount(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CustomListTile(
-                              icon: Boxicons.bxs_user_detail,
-                              title: "បុគ្គលិកទាំងអស់",
-                              subtitle: "សរុប៖ ..",
-                              onPressed: () {},
-                            );
-                          } else {
-                            final empCounts = snapshot.data ?? {};
-                            final totalCount = empCounts.values.fold(
-                              0,
-                              (sum, count) => sum + count,
-                            );
-                            return CustomListTile(
-                              icon: Boxicons.bxs_user_detail,
-                              title: "បុគ្គលិកទាំងអស់",
-                              subtitle: "សរុប៖ $totalCount",
-                              onPressed: () {},
-                            );
-                          }
-                        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(builder: (context) => AddnewEmp()),
+                        );
+                      },
+                      title: Text(
+                        'បន្ថែមបុគ្គលិកថ្មី',
+                        style: TextStyle(fontSize: 16),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => AddnewEmp(),
-                            ),
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        child: Text(
-                          'បន្ថែមបុគ្គលិកថ្មី',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                      trailing: Icon(
+                        Boxicons.bxs_user_plus,
+                        color: Colors.blue,
+                        size: 28,
                       ),
-                    ],
-                  ),
+                    ),
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(builder: (context) => CreateAcc()),
+                        );
+                      },
+                      title: Text(
+                        'បង្កើតគណនីថ្មី',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      trailing: Icon(
+                        Icons.add_circle_sharp,
+                        color: Colors.blue,
+                        size: 28,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 10),
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Padding(
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                     padding: const EdgeInsets.symmetric(
-                      vertical: 0,
-                      horizontal: 8,
+                      horizontal: 20,
+                      vertical: 15,
                     ),
                     child: Column(
                       children: [
+                        FutureBuilder<Map<String, int>>(
+                          future: getEmpCount(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return ListTile(
+                                contentPadding: EdgeInsets.only(left: 0),
+                                title: Text('បុគ្គលិកសរុប'),
+                                subtitle: Text('...'),
+                                onTap: () {},
+                              );
+                            } else {
+                              final empCounts = snapshot.data ?? {};
+                              final totalCount = empCounts.values.fold(
+                                0,
+                                // ignore: avoid_types_as_parameter_names
+                                (sum, count) => sum + count,
+                              );
+                              return ListTile(
+                                title: Text('បុគ្គលិកសរុប'),
+                                contentPadding: EdgeInsets.only(
+                                  left: 0,
+                                  right: 0,
+                                ),
+                                trailing: IconButton(
+                                  onPressed: () {
+                                    setState(() {});
+                                  },
+                                  icon: Icon(
+                                    Boxicons.bx_refresh,
+                                    color: Colors.blue,
+                                    size: 28,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  '$totalCount នាក់',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                      builder: (context) => EmployeeManage(),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
+                        Divider(),
                         FutureBuilder<QuerySnapshot>(
                           future:
                               FirebaseFirestore.instance
@@ -146,9 +177,15 @@ class _EmployeeManageState extends State<EmployeeManage> {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
                               return Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 200),
-                                  child: CircularProgressIndicator(),
+                                child: SizedBox(
+                                  width: 50,
+                                  height: 5,
+                                  child: LinearProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.blue,
+                                    ),
+                                    // strokeWidth: 2.0,
+                                  ),
                                 ),
                               );
                             } else if (snapshot.hasError) {
@@ -215,8 +252,8 @@ class _EmployeeManageState extends State<EmployeeManage> {
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

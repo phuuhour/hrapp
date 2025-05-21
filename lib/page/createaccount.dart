@@ -115,7 +115,7 @@ class _CreateAccState extends State<CreateAcc> {
 
             CustomTextField(
               label: "លេខទូរស័ព្ទ",
-              hint: 'លេខទូរស័ព្ទនឹងបានបំពេញដោយស្វ័យប្រវត្តិ',
+              hint: '0123xxxxxx',
               icon: const Icon(Icons.phone),
               lendingIcon: false,
               keyboardType: TextInputType.phone,
@@ -178,18 +178,37 @@ class _CreateAccState extends State<CreateAcc> {
                     return;
                   }
 
+                  // Check if empId already has an account
+                  final existingAcc =
+                      await FirebaseFirestore.instance
+                          .collection('empacc')
+                          .doc(selectedEmpId)
+                          .get();
+                  if (existingAcc.exists) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('បុគ្គលិកនេះមានគណនីរួចហើយ'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    setState(() => isLoading = false);
+                    return;
+                  }
+
                   final empAccount = EmpAccount(
                     empId: selectedEmpId!,
                     fullname: fullnameController.text,
                     phone: phoneController.text,
                     password: passwordController.text,
-                    createdAt: FieldValue.serverTimestamp() as Timestamp?,
                   );
+
+                  final data = empAccount.toMap();
+                  data['createdAt'] = FieldValue.serverTimestamp();
 
                   await FirebaseFirestore.instance
                       .collection('empacc')
                       .doc(selectedEmpId)
-                      .set(empAccount.toMap());
+                      .set(data);
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

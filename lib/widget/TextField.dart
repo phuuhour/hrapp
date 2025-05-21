@@ -57,14 +57,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.label,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-          ),
-        ),
+        // Text(
+        //   widget.label,
+        //   style: const TextStyle(
+        //     fontSize: 14,
+        //     fontWeight: FontWeight.w500,
+        //     color: Colors.black,
+        //   ),
+        // ),
         TextField(
           controller: widget.controller,
           obscureText: widget.isPassword ? _obscureText : false,
@@ -74,16 +74,20 @@ class _CustomTextFieldState extends State<CustomTextField> {
           keyboardType: widget.keyboardType,
           decoration: InputDecoration(
             filled: true,
-            fillColor: Colors.grey.withOpacity(0.15),
+            fillColor: Colors.blue.withOpacity(0.15),
             hintText: widget.hint,
-            hintStyle: const TextStyle(fontSize: 14, color: Colors.black54),
+            hintStyle: const TextStyle(fontSize: 15, color: Colors.black54),
             prefixIcon: widget.lendingIcon ? widget.icon : null,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: BorderSide.none,
+            ),
             suffixIcon:
                 widget.isPassword
                     ? IconButton(
                       icon: Icon(
                         _obscureText ? Boxicons.bxs_show : Boxicons.bxs_hide,
-                        color: Colors.black45,
+                        color: Colors.blue,
                         size: 30,
                       ),
                       onPressed: () {
@@ -101,10 +105,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       onPressed: () => _selectDate(context, DateTime.now()),
                     )
                     : null,
-
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.blue, width: 2),
-            ),
           ),
         ),
       ],

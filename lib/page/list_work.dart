@@ -21,10 +21,9 @@ class _ListWorkState extends State<ListWork> {
           icon: Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        centerTitle: true,
         title: Text(
           widget.sectionTitle,
-          style: TextStyle(fontSize: 18, color: Colors.white),
+          style: TextStyle(fontSize: 16, color: Colors.white),
         ),
         backgroundColor: Colors.green,
         elevation: 0,

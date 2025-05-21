@@ -1,11 +1,12 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, deprecated_member_use, use_build_context_synchronously
 
 import 'package:boxicons/boxicons.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hr/model/adminaccount.dart';
 import 'package:hr/screen/dashboradScreen.dart';
 import 'package:hr/widget/Button.dart';
 import 'package:hr/widget/TextField.dart';
-import 'package:hugeicons/hugeicons.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,69 +16,145 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool isLoading = false;
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('ព្យាយាមម្ដងទៀត', style: TextStyle(fontSize: 18)),
+            content: Text(message),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 15,
+              horizontal: 25,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                child: const Text(
+                  'យល់ព្រម',
+                  style: TextStyle(color: Colors.white, fontSize: 14),
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var isLoading = false;
     return Scaffold(
+      backgroundColor: Colors.white.withOpacity(0.95),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 100),
             child: Column(
               children: [
-                CircleAvatar(
-                  radius: 80,
-                  backgroundColor: const Color.fromARGB(255, 192, 230, 255),
-                  child: Icon(
-                    HugeIcons.strokeRoundedLoginMethod,
-                    size: 80,
-                    color: Colors.blue,
-                  ),
-                ),
+                Image.asset('assets/icons/login.png', height: 150),
                 SizedBox(height: 20),
                 Text(
-                  'ចូលគណនីរបស់អ្នក',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  'ចូលគណនី',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
-                SizedBox(height: 50),
+                SizedBox(height: 45),
                 CustomTextField(
                   label: "លេខទូរស័ព្ទ",
                   icon: Icon(Boxicons.bxs_phone),
                   lendingIcon: false,
-                  hint: '',
+                  hint: 'លេខទូរស័ព្ទ',
                   keyboardType: TextInputType.number,
+                  controller: phoneController,
                 ),
                 const SizedBox(height: 20),
                 CustomTextField(
                   label: "ពាក្យសម្ងាត់",
                   isPassword: true,
-                  hint: '',
+                  hint: 'ពាក្យសម្ងាត់',
                   icon: Icon(Boxicons.bxs_lock),
                   lendingIcon: false,
                   keyboardType: TextInputType.text,
+                  controller: passwordController,
                 ),
-                SizedBox(height: 60),
+
+                SizedBox(height: 65),
                 CustomButton(
                   color: Colors.blue,
-                  width: MediaQuery.of(context).size.width,
+                  width: double.infinity,
                   height: 50,
                   isLoading: isLoading,
                   text: 'ចូលគណនី',
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() {
                       isLoading = true;
                     });
-                    Future.delayed(Duration(seconds: 0), () {
+                    final phone = phoneController.text.trim();
+                    final password = passwordController.text.trim();
+
+                    if (phone.isEmpty || password.isEmpty) {
                       setState(() {
                         isLoading = false;
-                        Navigator.pushReplacement(
-                          context,
+                      });
+                      showErrorDialog(
+                        context,
+                        'សូមបំពេញលេខទូរស័ព្ទ និងពាក្យសម្ងាត់',
+                      );
+                      return;
+                    }
+
+                    try {
+                      final querySnapshot =
+                          await FirebaseFirestore.instance
+                              .collection('adminacc')
+                              .where('phone', isEqualTo: phone)
+                              .where('password', isEqualTo: password)
+                              .limit(1)
+                              .get();
+
+                      if (querySnapshot.docs.isNotEmpty) {
+                        final adminData = AdminAccount.fromMap(
+                          querySnapshot.docs.first.data(),
+                        );
+                        Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => DashboardScreen(),
+                            builder:
+                                (context) => DashboardScreen(admin: adminData),
                           ),
                         );
-                      });
-                    });
+                      } else {
+                        showErrorDialog(
+                          context,
+                          'លេខទូរស័ព្ទ ឬ ពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ។',
+                        );
+                      }
+                    } catch (e) {
+                      showErrorDialog(
+                        context,
+                        'កំហុសក្នុងការតភ្ជាប់។ សូមព្យាយាមម្តងទៀត។',
+                      );
+                    } finally {
+                      if (mounted) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                    }
                   },
                 ),
               ],

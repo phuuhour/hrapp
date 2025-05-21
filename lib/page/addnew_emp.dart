@@ -201,7 +201,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
-              'ឈ្មោះពេញត្រូវតែជាអក្សរ',
+              'ឈ្មោះពេញត្រូវតែជាអក្សរ',  
               style: TextStyle(fontSize: 16),
             ),
             backgroundColor: Colors.red,

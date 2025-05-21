@@ -1,18 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class EmpAccount {
   final String empId;
   final String fullname;
   final String phone;
   final String password;
-  final Timestamp? createdAt;
 
   EmpAccount({
     required this.empId,
     required this.fullname,
     required this.phone,
     required this.password,
-    this.createdAt,
   });
 
   factory EmpAccount.fromMap(Map<String, dynamic> map) {
@@ -21,7 +17,6 @@ class EmpAccount {
       fullname: map['fullname'] ?? '',
       phone: map['phone'] ?? '',
       password: map['password'] ?? '',
-      createdAt: map['createdAt'],
     );
   }
 
@@ -31,7 +26,6 @@ class EmpAccount {
       'fullname': fullname,
       'phone': phone,
       'password': password,
-      'createdAt': createdAt,
     };
   }
 }

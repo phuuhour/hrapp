@@ -25,17 +25,17 @@ class EmpData {
     required this.gender,
     required this.dob,
     required this.phone,
-    required this.email,
-    required this.nationalId,
+    required this.email, //1
+    required this.nationalId, //2
     required this.typeEmp,
     required this.address,
     required this.startDate,
     required this.branch,
     required this.section,
     required this.workname,
-    required this.paidBy,
-    required this.accName,
-    required this.accNumber,
+    required this.paidBy, //3
+    required this.accName, //4
+    required this.accNumber, //5
     required this.baseSal,
   });
 
