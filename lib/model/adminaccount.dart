@@ -3,12 +3,14 @@ class AdminAccount {
   final String fullname;
   final String phone;
   final String password;
+  String imgUrl;
 
   AdminAccount({
     required this.adminId,
     required this.fullname,
     required this.phone,
     required this.password,
+    required this.imgUrl,
   });
 
   factory AdminAccount.fromMap(Map<String, dynamic> map) {
@@ -17,6 +19,7 @@ class AdminAccount {
       fullname: map['fullname'] ?? '',
       phone: map['phone'] ?? '',
       password: map['password'] ?? '',
+      imgUrl: map['imgUrl'] ?? '',
     );
   }
 
@@ -26,6 +29,7 @@ class AdminAccount {
       'fullname': fullname,
       'phone': phone,
       'password': password,
+      'imgUrl': imgUrl,
     };
   }
 }

@@ -4,6 +4,7 @@ import 'package:boxicons/boxicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hr/page/addnew_emp.dart';
 import 'package:hr/page/addnew_work.dart';
 import 'package:hr/page/detail_work.dart';
 import 'package:hr/page/list_section.dart';
@@ -53,7 +54,12 @@ class _WorkManageState extends State<WorkManage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                top: 10,
+                left: 10,
+                right: 10,
+                bottom: 5,
+              ),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -67,8 +73,30 @@ class _WorkManageState extends State<WorkManage> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          CupertinoPageRoute(
-                            builder: (context) => ListSection(),
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    ListSection(),
+                            transitionsBuilder: (
+                              context,
+                              animation,
+                              secondaryAnimation,
+                              child,
+                            ) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              var tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                            transitionDuration: Duration(milliseconds: 300),
                           ),
                         );
                       },
@@ -77,7 +105,7 @@ class _WorkManageState extends State<WorkManage> {
                         style: TextStyle(fontSize: 16),
                       ),
                       trailing: Icon(
-                        Boxicons.bxs_briefcase_alt_2,
+                        Icons.group_work_sharp,
                         color: Colors.blue,
                         size: 28,
                       ),
@@ -87,8 +115,30 @@ class _WorkManageState extends State<WorkManage> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          CupertinoPageRoute(
-                            builder: (context) => AddNewWork(),
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    AddNewWork(),
+                            transitionsBuilder: (
+                              context,
+                              animation,
+                              secondaryAnimation,
+                              child,
+                            ) {
+                              const begin = Offset(1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              var tween = Tween(
+                                begin: begin,
+                                end: end,
+                              ).chain(CurveTween(curve: curve));
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                            transitionDuration: Duration(milliseconds: 300),
                           ),
                         );
                       },
@@ -107,99 +157,141 @@ class _WorkManageState extends State<WorkManage> {
               ),
             ),
             Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
+              child: RefreshIndicator(
+                strokeWidth: 2,
+                backgroundColor: Colors.white,
+                color: Colors.blue,
+                onRefresh: () async {
+                  setState(() {});
+                },
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 15,
+                      vertical: 5,
+                      horizontal: 10,
                     ),
-                    child: Column(
-                      children: [
-                        TextField(
-                          decoration: InputDecoration(
-                            hintText: 'ស្វែងរកការងារ',
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 15,
+                      ),
+                      child: Column(
+                        children: [
+                          TextField(
+                            decoration: InputDecoration(
+                              hintText: 'ស្វែងរកការងារ',
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                _searchQuery = value;
+                              });
+                            },
+                            controller: _searchController,
                           ),
-                          onChanged: (value) {
-                            setState(() {
-                              _searchQuery = value;
-                            });
-                          },
-                          controller: _searchController,
-                        ),
-                        SizedBox(height: 10),
-                        FutureBuilder<QuerySnapshot>(
-                          future: searchEmployees(_searchQuery),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(
-                                child: SizedBox(
-                                  width: 50,
-                                  height: 5,
-                                  child: LinearProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.blue,
+                          SizedBox(height: 10),
+                          FutureBuilder<QuerySnapshot>(
+                            future: searchEmployees(_searchQuery),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: SizedBox(
+                                    width: 50,
+                                    height: 5,
+                                    child: LinearProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.blue,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            } else if (snapshot.hasError) {
-                              return Center(
-                                child: Text('មានបញ្ហាក្នុងការទាញយកទិន្នន័យ'),
-                              );
-                            } else {
-                              final works = snapshot.data?.docs ?? [];
+                                );
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                  child: Text('មានបញ្ហាក្នុងការទាញយកទិន្នន័យ'),
+                                );
+                              } else {
+                                final works = snapshot.data?.docs ?? [];
 
-                              if (works.isEmpty) {
-                                return Center(child: Text('រកមិនឃើញ'));
+                                if (works.isEmpty) {
+                                  return Center(child: Text('រកមិនឃើញ'));
+                                }
+
+                                return Column(
+                                  children: List.generate(works.length, (
+                                    index,
+                                  ) {
+                                    final work = works[index];
+                                    final data =
+                                        work.data() as Map<String, dynamic>;
+                                    final workName = data['workName'] ?? '...';
+                                    final branch = data['branch'] ?? '...';
+
+                                    return ListTile(
+                                      contentPadding: EdgeInsets.only(left: 0),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                            pageBuilder:
+                                                (
+                                                  context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                ) => DetailWork(
+                                                  workId: work.id,
+                                                  workData: data,
+                                                ),
+                                            transitionsBuilder: (
+                                              context,
+                                              animation,
+                                              secondaryAnimation,
+                                              child,
+                                            ) {
+                                              const begin = Offset(1.0, 0.0);
+                                              const end = Offset.zero;
+                                              const curve = Curves.easeInOut;
+
+                                              var tween = Tween(
+                                                begin: begin,
+                                                end: end,
+                                              ).chain(CurveTween(curve: curve));
+                                              return SlideTransition(
+                                                position: animation.drive(
+                                                  tween,
+                                                ),
+                                                child: child,
+                                              );
+                                            },
+                                            transitionDuration: Duration(
+                                              milliseconds: 300,
+                                            ),
+                                          ),
+                                        );
+                                      },
+
+                                      title: Text(
+                                        workName,
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                      subtitle: Text(branch),
+                                      trailing: Icon(
+                                        Boxicons.bxs_chevron_right,
+                                        color: Colors.grey,
+                                      ),
+                                    );
+                                  }),
+                                );
                               }
-
-                              return Column(
-                                children: List.generate(works.length, (index) {
-                                  final work = works[index];
-                                  final data =
-                                      work.data() as Map<String, dynamic>;
-                                  final workName = data['workName'] ?? '...';
-                                  final branch = data['branch'] ?? '...';
-
-                                  return ListTile(
-                                    contentPadding: EdgeInsets.only(left: 0),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        CupertinoPageRoute(
-                                          builder:
-                                              (context) => DetailWork(
-                                                workId: work.id,
-                                                workData: data,
-                                              ),
-                                        ),
-                                      );
-                                    },
-
-                                    title: Text(
-                                      workName,
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    subtitle: Text(branch),
-                                    trailing: Icon(
-                                      Boxicons.bxs_chevron_right,
-                                      color: Colors.grey,
-                                    ),
-                                  );
-                                }),
-                              );
-                            }
-                          },
-                        ),
-                      ],
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

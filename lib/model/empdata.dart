@@ -7,7 +7,7 @@ class EmpData {
   final DateTime dob;
   final String phone;
   final String email;
-  final String nationalId;
+  final String adminname;
   final String typeEmp;
   final String address;
   final DateTime startDate;
@@ -25,17 +25,17 @@ class EmpData {
     required this.gender,
     required this.dob,
     required this.phone,
-    required this.email, //1
-    required this.nationalId, //2
+    required this.email,
+    required this.adminname,
     required this.typeEmp,
     required this.address,
     required this.startDate,
     required this.branch,
     required this.section,
     required this.workname,
-    required this.paidBy, //3
-    required this.accName, //4
-    required this.accNumber, //5
+    required this.paidBy,
+    required this.accName,
+    required this.accNumber,
     required this.baseSal,
   });
 
@@ -50,7 +50,7 @@ class EmpData {
               : DateTime(2000),
       phone: map['phone'] ?? '',
       email: map['email'] ?? '',
-      nationalId: map['nationalId'] ?? '',
+      adminname: map['adminname'] ?? '',
       typeEmp: map['typeEmp'] ?? '',
       address: map['address'] ?? '',
       startDate:

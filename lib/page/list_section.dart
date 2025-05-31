@@ -117,7 +117,7 @@ class _ListSectionState extends State<ListSection> {
                                               MediaQuery.of(context).size.width,
                                           height: 45, // Set button height
                                           isLoading: isAddingSection,
-                                          text: 'បន្ថែមថ្មី',
+                                          text: 'បញ្ជូន',
                                           onPressed: () async {
                                             setState(() {
                                               isAddingSection = true;
@@ -512,10 +512,45 @@ class _ListSectionState extends State<ListSection> {
                                             onTap: () {
                                               Navigator.push(
                                                 context,
-                                                CupertinoPageRoute(
-                                                  builder:
-                                                      (context) => ListWork(
+                                                PageRouteBuilder(
+                                                  pageBuilder:
+                                                      (
+                                                        context,
+                                                        animation,
+                                                        secondaryAnimation,
+                                                      ) => ListWork(
                                                         sectionTitle: section,
+                                                      ),
+                                                  transitionsBuilder: (
+                                                    context,
+                                                    animation,
+                                                    secondaryAnimation,
+                                                    child,
+                                                  ) {
+                                                    const begin = Offset(
+                                                      1.0,
+                                                      0.0,
+                                                    );
+                                                    const end = Offset.zero;
+                                                    const curve =
+                                                        Curves.easeInOut;
+
+                                                    var tween = Tween(
+                                                      begin: begin,
+                                                      end: end,
+                                                    ).chain(
+                                                      CurveTween(curve: curve),
+                                                    );
+                                                    return SlideTransition(
+                                                      position: animation.drive(
+                                                        tween,
+                                                      ),
+                                                      child: child,
+                                                    );
+                                                  },
+                                                  transitionDuration:
+                                                      const Duration(
+                                                        milliseconds: 300,
                                                       ),
                                                 ),
                                               );

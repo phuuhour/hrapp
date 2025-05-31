@@ -1,12 +1,11 @@
-// ignore_for_file: file_names, deprecated_member_use, use_build_context_synchronously
-
-import 'package:boxicons/boxicons.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/model/adminaccount.dart';
 import 'package:hr/screen/dashboradScreen.dart';
 import 'package:hr/widget/Button.dart';
 import 'package:hr/widget/TextField.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:boxicons/boxicons.dart';
+import 'package:hr/model/adminaccount.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,10 +16,28 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
+  bool rememberMe = false;
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void showErrorDialog(BuildContext context, String message) {
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      rememberMe = prefs.getBool('rememberMe') ?? false;
+      if (rememberMe) {
+        phoneController.text = prefs.getString('savedPhone') ?? '';
+        passwordController.text = prefs.getString('savedPassword') ?? '';
+      }
+    });
+  }
+
+  void showErrorDialog(String message) {
     showDialog(
       context: context,
       builder:
@@ -64,8 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 Image.asset('assets/icons/login.png', height: 150),
-                SizedBox(height: 20),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   'ចូលគណនី',
                   style: TextStyle(
                     fontSize: 24,
@@ -73,7 +90,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Colors.black87,
                   ),
                 ),
-                SizedBox(height: 45),
+                const SizedBox(height: 45),
+
                 CustomTextField(
                   label: "លេខទូរស័ព្ទ",
                   icon: Icon(Boxicons.bxs_phone),
@@ -83,6 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: phoneController,
                 ),
                 const SizedBox(height: 20),
+
                 CustomTextField(
                   label: "ពាក្យសម្ងាត់",
                   isPassword: true,
@@ -93,7 +112,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: passwordController,
                 ),
 
-                SizedBox(height: 65),
+                // Remember Me Checkbox
+                Row(
+                  children: [
+                    Checkbox(
+                      value: rememberMe,
+                      onChanged: (value) => setState(() => rememberMe = value!),
+                    ),
+                    const Text('ចងចាំគណនី'),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                // Login Button (using your CustomButton)
                 CustomButton(
                   color: Colors.blue,
                   width: double.infinity,
@@ -111,10 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       setState(() {
                         isLoading = false;
                       });
-                      showErrorDialog(
-                        context,
-                        'សូមបំពេញលេខទូរស័ព្ទ និងពាក្យសម្ងាត់',
-                      );
+                      showErrorDialog('សូមបំពេញលេខទូរស័ព្ទ និងពាក្យសម្ងាត់');
                       return;
                     }
 
@@ -131,6 +160,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         final adminData = AdminAccount.fromMap(
                           querySnapshot.docs.first.data(),
                         );
+
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setString('adminPhone', adminData.phone);
+                        await prefs.setBool('isLoggedIn', true);
+
+                        if (rememberMe) {
+                          await prefs.setString('savedPhone', phone);
+                          await prefs.setString('savedPassword', password);
+                          await prefs.setBool('rememberMe', true);
+                        } else {
+                          await prefs.remove('savedPhone');
+                          await prefs.remove('savedPassword');
+                          await prefs.setBool('rememberMe', false);
+                        }
+
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                             builder:
@@ -139,13 +183,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       } else {
                         showErrorDialog(
-                          context,
                           'លេខទូរស័ព្ទ ឬ ពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ។',
                         );
                       }
                     } catch (e) {
                       showErrorDialog(
-                        context,
                         'កំហុសក្នុងការតភ្ជាប់។ សូមព្យាយាមម្តងទៀត។',
                       );
                     } finally {

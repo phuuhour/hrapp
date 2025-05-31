@@ -239,7 +239,7 @@ class _PayrollManageState extends State<PayrollManage> {
                                       radius: 25,
                                       backgroundColor: Colors.transparent,
                                       backgroundImage: AssetImage(
-                                        'assets/images/profile.png',
+                                        'assets/images/avatar.png',
                                       ),
                                     ),
                                     title: Text(

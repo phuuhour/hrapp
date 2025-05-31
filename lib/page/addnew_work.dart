@@ -3,7 +3,6 @@
 import 'package:boxicons/boxicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/model/section.dart';
 import 'package:hr/widget/Button.dart';
 import 'package:hr/widget/Dropdownlist.dart';
 import 'package:hr/widget/TextField.dart';
@@ -199,7 +198,7 @@ class _AddNewWorkState extends State<AddNewWork> {
                     const SizedBox(height: 10),
                     CustomTextField(
                       label: 'លេខសម្គាល់ការងារ',
-                      hint: '',
+                      hint: 'លេខសម្គាល់ការងារ',
                       icon: const Icon(Boxicons.bx_credit_card),
                       keyboardType: TextInputType.text,
                       lendingIcon: false,
@@ -222,7 +221,7 @@ class _AddNewWorkState extends State<AddNewWork> {
                         return CustomDropdownList(
                           label: 'ផ្នែក',
                           controller: _sectionController,
-                          hint: 'សូមជ្រើសរើស',
+                          hint: 'ផ្នែក​',
                           icon: Icons.arrow_drop_down,
                           items: sections,
                           onChanged: (value) {
@@ -236,7 +235,7 @@ class _AddNewWorkState extends State<AddNewWork> {
                     const SizedBox(height: 15),
                     CustomTextField(
                       label: 'ឈ្មោះការងារ',
-                      hint: '',
+                      hint: 'ឈ្មោះការងារ',
                       icon: const Icon(Boxicons.bx_credit_card),
                       keyboardType: TextInputType.text,
                       lendingIcon: false,
@@ -245,7 +244,7 @@ class _AddNewWorkState extends State<AddNewWork> {
                     const SizedBox(height: 15),
                     CustomTextField(
                       label: 'ថ្ងៃចាប់ផ្តើម',
-                      hint: '',
+                      hint: 'ថ្ងៃចាប់ផ្តើម',
                       icon: const Icon(Boxicons.bx_credit_card),
                       isDate: true,
                       controller: _dateController,
@@ -281,7 +280,7 @@ class _AddNewWorkState extends State<AddNewWork> {
                         'ប៉ៃលិន',
                         'ត្បូងឃ្មុំ',
                       ],
-                      hint: 'សូមជ្រើសរើស',
+                      hint: 'ទីតាំងការងារ(សាខា)',
                       controller: _branchController,
                       icon: Icons.arrow_drop_down,
                       onChanged: (items) {
@@ -295,7 +294,7 @@ class _AddNewWorkState extends State<AddNewWork> {
                     const SizedBox(height: 15),
                     CustomTextField(
                       label: 'ប្រាក់បៀវត្ស(គិតក្នុង១ឆ្នាំម្តង)',
-                      hint: '',
+                      hint: 'ប្រាក់បៀវត្ស(គិតក្នុង១ឆ្នាំម្តង)',
                       icon: const Icon(Boxicons.bx_credit_card),
                       keyboardType: TextInputType.number,
                       lendingIcon: false,

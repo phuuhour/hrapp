@@ -5,8 +5,10 @@ import 'dart:math';
 import 'package:boxicons/boxicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hr/model/adminaccount.dart';
 import 'package:hr/widget/Dropdownlist.dart';
 import 'package:hr/widget/TextField.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddnewEmp extends StatefulWidget {
   const AddnewEmp({super.key});
@@ -27,11 +29,11 @@ class _AddnewEmpState extends State<AddnewEmp> {
   final TextEditingController _dob = TextEditingController();
   final TextEditingController _phone = TextEditingController();
   final TextEditingController _email = TextEditingController();
-  final TextEditingController _nationalId = TextEditingController();
+  final TextEditingController _adminname = TextEditingController();
   final TextEditingController _typeemp = TextEditingController();
   final TextEditingController _address = TextEditingController();
   final TextEditingController _startDate = TextEditingController();
-  final TextEditingController _workname = TextEditingController();
+  final TextEditingController _workId = TextEditingController();
   final TextEditingController _paidby = TextEditingController();
   final TextEditingController _accname = TextEditingController();
   final TextEditingController _accnumber = TextEditingController();
@@ -43,28 +45,59 @@ class _AddnewEmpState extends State<AddnewEmp> {
   List<String> empIdItems = [];
   List<String> sectionItems = [];
   List<String> workNameItems = [];
+  List<String> adminFullnames = [];
 
   @override
   void initState() {
     super.initState();
-    _loadExistingEmpIds();
-    _workname.addListener(_generateEmpIdBasedOnWorkName);
+    // _loadExistingEmpIds();
+    _workId.addListener(_generateEmpIdBasedOnWorkId);
     _branch.addListener(_loadSectionsForBranch);
     _section.addListener(_loadWorkNamesForSection);
+    _loadCurrentAdmin();
   }
 
-  void _loadExistingEmpIds() async {
-    final querySnapshot =
-        await FirebaseFirestore.instance.collection('employees').get();
+  void _loadCurrentAdmin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final adminPhone = prefs.getString('adminPhone');
 
-    setState(() {
-      existingEmpIds =
-          querySnapshot.docs.map((doc) => doc['empId'] as String).toList();
-    });
+    if (adminPhone != null) {
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('adminacc')
+              .where('phone', isEqualTo: adminPhone)
+              .limit(1)
+              .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        final admin = AdminAccount.fromMap(snapshot.docs.first.data());
+
+        setState(() {
+          adminFullnames = [admin.fullname];
+          _adminname.text = admin.fullname;
+        });
+      }
+    }
   }
+
+  // void _loadExistingEmpIds() async {
+  //   final querySnapshot =
+  //       await FirebaseFirestore.instance.collection('employees').get();
+
+  //   setState(() {
+  //     existingEmpIds =
+  //         querySnapshot.docs.map((doc) => doc['empId'] as String).toList();
+  //   });
+  // }
 
   void _loadSectionsForBranch() async {
-    if (_branch.text.isEmpty) return;
+    if (_branch.text.isEmpty) {
+      setState(() {
+        sectionItems = ['សូមជ្រើសរើសសាខាជាមុនសិន']; // Default hint
+        workNameItems = ['សូមជ្រើសរើសផ្នែកជាមុនសិន']; // Reset workNames
+      });
+      return;
+    }
 
     final querySnapshot =
         await FirebaseFirestore.instance
@@ -79,15 +112,20 @@ class _AddnewEmpState extends State<AddnewEmp> {
             .toList();
 
     setState(() {
-      sectionItems = sections;
-      _section.clear();
-      _workname.clear();
-      _empId.clear();
+      sectionItems = sections; // actual selectable items only
+      _section.clear(); // Reset section selection
+      _workId.clear(); // Reset workName selection
+      workNameItems = []; // Clear work names completely
     });
   }
 
   void _loadWorkNamesForSection() async {
-    if (_branch.text.isEmpty || _section.text.isEmpty) return;
+    if (_branch.text.isEmpty || _section.text.isEmpty) {
+      setState(() {
+        workNameItems = ['សូមជ្រើសរើសផ្នែកជាមុនសិន']; // Default hint
+      });
+      return;
+    }
 
     final querySnapshot =
         await FirebaseFirestore.instance
@@ -104,14 +142,31 @@ class _AddnewEmpState extends State<AddnewEmp> {
 
     setState(() {
       workNameItems = workNames;
-      _workname.clear();
+      _workId.clear();
       _empId.clear();
     });
   }
 
-  void _generateEmpIdBasedOnWorkName() {
-    if (_workname.text.trim().length >= 3) {
-      String generated = generateEmpId(_workname.text.trim(), existingEmpIds);
+  void _generateEmpIdBasedOnWorkId() async {
+    if (_workId.text.trim().isEmpty ||
+        _branch.text.isEmpty ||
+        _section.text.isEmpty) {
+      return;
+    }
+
+    // Fetch the workId from Firestore based on branch, section, and workname
+    final querySnapshot =
+        await FirebaseFirestore.instance
+            .collection('works')
+            .where('branch', isEqualTo: _branch.text)
+            .where('section', isEqualTo: _section.text)
+            .where('workName', isEqualTo: _workId.text)
+            .limit(1)
+            .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      final workId = querySnapshot.docs.first['workId'] as String;
+      String generated = generateEmpId(workId, existingEmpIds);
       setState(() {
         empIdItems = [generated];
         _empId.text = generated;
@@ -125,13 +180,13 @@ class _AddnewEmpState extends State<AddnewEmp> {
     int attempts = 0;
 
     do {
-      int num = 100 + random.nextInt(900);
+      int num = 100 + random.nextInt(999);
       newId = '${workId}_$num';
       attempts++;
 
       if (attempts > 100) {
         newId =
-            '${workId}_${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
+            '${workId}_${DateTime.now().millisecondsSinceEpoch.toString().substring(3)}';
         break;
       }
     } while (existingIds.contains(newId));
@@ -147,13 +202,13 @@ class _AddnewEmpState extends State<AddnewEmp> {
     _dob.dispose();
     _phone.dispose();
     _email.dispose();
-    _nationalId.dispose();
+    _adminname.dispose();
     _typeemp.dispose();
     _address.dispose();
     _startDate.dispose();
     _branch.dispose();
     _section.dispose();
-    _workname.dispose();
+    _workId.dispose();
     _paidby.dispose();
     _accname.dispose();
     _accnumber.dispose();
@@ -170,13 +225,13 @@ class _AddnewEmpState extends State<AddnewEmp> {
           _dob.text.isEmpty ||
           _phone.text.isEmpty ||
           _email.text.isEmpty ||
-          _nationalId.text.isEmpty ||
+          _adminname.text.isEmpty ||
           _typeemp.text.isEmpty ||
           _address.text.isEmpty ||
           _startDate.text.isEmpty ||
           _branch.text.isEmpty ||
           _section.text.isEmpty ||
-          _workname.text.isEmpty ||
+          _workId.text.isEmpty ||
           _paidby.text.isEmpty ||
           _basesal.text.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -235,19 +290,6 @@ class _AddnewEmpState extends State<AddnewEmp> {
         return;
       }
 
-      if (!numberReg.hasMatch(_nationalId.text.trim())) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'អត្តសញ្ញាណប័ត្រត្រូវតែមានតែលេខប៉ុណ្ណោះ',
-              style: TextStyle(fontSize: 16),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-
       if (int.tryParse(_basesal.text.trim()) == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -277,13 +319,13 @@ class _AddnewEmpState extends State<AddnewEmp> {
           'dob': dobDate,
           'phone': _phone.text.trim(),
           'email': _email.text.trim(),
-          'nationalId': _nationalId.text.trim(),
+          'adminname': _adminname.text.trim(),
           'typeEmp': _typeemp.text.trim(),
           'address': _address.text.trim(),
           'startDate': startDate,
           'branch': _branch.text.trim(),
           'section': _section.text.trim(),
-          'workname': _workname.text.trim(),
+          'workname': _workId.text.trim(),
           'paidBy': _paidby.text.trim(),
           'accName': _accname.text.trim(),
           'accNumber': _accnumber.text.trim(),
@@ -314,13 +356,13 @@ class _AddnewEmpState extends State<AddnewEmp> {
         _dob.clear();
         _phone.clear();
         _email.clear();
-        _nationalId.clear();
+        _adminname.clear();
         _typeemp.clear();
         _address.clear();
         _startDate.clear();
         _branch.clear();
         _section.clear();
-        _workname.clear();
+        _workId.clear();
         _paidby.clear();
         _accname.clear();
         _accnumber.clear();
@@ -430,16 +472,21 @@ class _AddnewEmpState extends State<AddnewEmp> {
                             'ប៉ៃលិន',
                             'ត្បូងឃ្មុំ',
                           ],
-                          hint: 'សូមជ្រើសរើស',
+                          hint:
+                              _branch.text.isEmpty
+                                  ? 'សូមជ្រើសរើសសាខាជាមុនសិន'
+                                  : (sectionItems.isEmpty
+                                      ? 'មិនមានផ្នែកក្នុងសាខានេះទេ'
+                                      : 'ជ្រើសរើសផ្នែក'),
                           controller: _branch,
-                          icon: Icons.arrow_drop_down,
-                          onChanged: (items) {
-                            if (items != null) {
+                          onChanged: (value) {
+                            if (value != null) {
                               setState(() {
-                                _branch.text = items;
+                                _branch.text = value;
                               });
                             }
                           },
+                          icon: Icons.arrow_drop_down,
                         ),
                         const SizedBox(height: 15),
                         CustomDropdownList(
@@ -448,16 +495,19 @@ class _AddnewEmpState extends State<AddnewEmp> {
                           hint:
                               _branch.text.isEmpty
                                   ? 'សូមជ្រើសរើសសាខាជាមុនសិន'
-                                  : 'ជ្រើសរើសផ្នែក',
+                                  : (sectionItems.isEmpty
+                                      ? 'មិនមានផ្នែកក្នុងសាខានេះទេ'
+                                      : 'ជ្រើសរើសផ្នែក'),
                           controller: _section,
-                          icon: Icons.arrow_drop_down,
-                          onChanged: (items) {
-                            if (items != null) {
+                          onChanged: (value) {
+                            if (value != null &&
+                                value != 'សូមជ្រើសរើសសាខាជាមុនសិន') {
                               setState(() {
-                                _section.text = items;
+                                _section.text = value;
                               });
                             }
                           },
+                          icon: Icons.arrow_drop_down,
                         ),
                         const SizedBox(height: 15),
                         CustomDropdownList(
@@ -466,17 +516,31 @@ class _AddnewEmpState extends State<AddnewEmp> {
                           hint:
                               _section.text.isEmpty
                                   ? 'សូមជ្រើសរើសផ្នែកជាមុនសិន'
-                                  : 'ជ្រើសរើសមុខងារ',
-                          controller: _workname,
-                          icon: Icons.arrow_drop_down,
+                                  : (workNameItems.isEmpty
+                                      ? 'មិនមានការងារក្នុងផ្នែកនេះទេ'
+                                      : 'ជ្រើសរើសការងារ'),
+
+                          controller: _workId,
                           onChanged: (value) {
-                            if (value != null) {
+                            if (value != null &&
+                                value != 'សូមជ្រើសរើសផ្នែកជាមុនសិន') {
                               setState(() {
-                                _workname.text = value;
+                                _workId.text = value;
                               });
                             }
                           },
+                          icon: Icons.arrow_drop_down,
                         ),
+                        const SizedBox(height: 15),
+                        CustomDropdownList(
+                          label: 'អ្នកគ្រប់គ្រង',
+                          items: adminFullnames,
+                          hint: 'អ្នកគ្រប់គ្រង',
+                          icon: Icons.arrow_drop_down,
+                          controller: _adminname,
+                          onChanged: (value) {},
+                        ),
+
                         const SizedBox(height: 40),
                         // Navigation Buttons for Step 0
                         Row(
@@ -571,7 +635,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                           label: 'លេខសម្គាល់បុគ្គលិក',
                           items: empIdItems,
                           hint:
-                              _workname.text.isEmpty
+                              _workId.text.isEmpty
                                   ? 'លេខសម្គាល់'
                                   : 'លេខសម្គាល់',
                           icon: Icons.arrow_drop_down,
@@ -585,7 +649,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                         const SizedBox(height: 15),
                         CustomTextField(
                           label: 'ឈ្មោះពេញ',
-                          hint: '',
+                          hint: 'ឈ្មោះពេញ',
                           icon: const Icon(Boxicons.bx_credit_card),
                           keyboardType: TextInputType.text,
                           lendingIcon: false,
@@ -595,7 +659,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                         CustomDropdownList(
                           label: 'ភេទ',
                           items: const ['ប្រុស', 'ស្រី'],
-                          hint: '',
+                          hint: 'ភេទ',
                           icon: Icons.arrow_drop_down,
                           controller: _gender,
                           onChanged: (value) {},
@@ -603,7 +667,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                         const SizedBox(height: 15),
                         CustomTextField(
                           label: 'ថ្ងៃខែឆ្នាំកំណើត',
-                          hint: '',
+                          hint: 'ថ្ងៃខែឆ្នាំកំណើត',
                           icon: const Icon(Boxicons.bx_credit_card),
                           isDate: true,
                           controller: _dob,
@@ -613,7 +677,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                         const SizedBox(height: 15),
                         CustomTextField(
                           label: 'លេខទូរស័ព្ទ',
-                          hint: '',
+                          hint: 'លេខទូរស័ព្ទ',
                           icon: const Icon(Boxicons.bx_credit_card),
                           keyboardType: TextInputType.number,
                           lendingIcon: false,
@@ -622,26 +686,18 @@ class _AddnewEmpState extends State<AddnewEmp> {
                         const SizedBox(height: 15),
                         CustomTextField(
                           label: 'អ៊ីម៊ែល',
-                          hint: '',
+                          hint: 'អ៊ីម៊ែល',
                           icon: const Icon(Boxicons.bx_credit_card),
                           keyboardType: TextInputType.emailAddress,
                           lendingIcon: false,
                           controller: _email,
                         ),
                         const SizedBox(height: 15),
-                        CustomTextField(
-                          label: 'លេខអត្តសញ្ញាណប័ណ្ណ',
-                          hint: '',
-                          icon: const Icon(Boxicons.bx_credit_card),
-                          keyboardType: TextInputType.number,
-                          lendingIcon: false,
-                          controller: _nationalId,
-                        ),
-                        const SizedBox(height: 15),
+
                         CustomDropdownList(
                           label: 'ប្រភេទបុគ្គលិក',
                           items: const ['កិច្ចសន្យា', 'ពេញម៉ោង', 'ក្រៅម៉ោង'],
-                          hint: '',
+                          hint: 'ប្រភេទបុគ្គលិក',
                           icon: Icons.arrow_drop_down,
                           controller: _typeemp,
                           onChanged: (value) {},
@@ -649,7 +705,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                         const SizedBox(height: 15),
                         CustomTextField(
                           label: 'អាសយដ្ឋាន',
-                          hint: '',
+                          hint: 'អាសយដ្ឋាន',
                           icon: const Icon(Boxicons.bx_credit_card),
                           keyboardType: TextInputType.text,
                           lendingIcon: false,
@@ -658,7 +714,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                         const SizedBox(height: 15),
                         CustomTextField(
                           label: 'ថ្ងៃចូលបំរើការងារ',
-                          hint: '',
+                          hint: 'ថ្ងៃចូលបំរើការងារ',
                           icon: const Icon(Boxicons.bx_credit_card),
                           isDate: true,
                           controller: _startDate,
@@ -760,7 +816,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                         CustomDropdownList(
                           label: 'បើកប្រាក់ដោយ',
                           items: const ['សាច់ប្រាក់', 'ធនាគារ'],
-                          hint: '',
+                          hint: 'បើកប្រាក់ដោយ',
                           icon: Icons.arrow_drop_down,
                           controller: _paidby,
                           onChanged: (value) {
@@ -777,7 +833,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                         if (_paidby.text == 'ធនាគារ') ...[
                           CustomTextField(
                             label: 'ឈ្មោះគណនីធនាគារ',
-                            hint: '',
+                            hint: 'ឈ្មោះគណនីធនាគារ',
                             icon: const Icon(Boxicons.bx_credit_card),
                             keyboardType: TextInputType.text,
                             lendingIcon: false,
@@ -786,7 +842,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                           const SizedBox(height: 15),
                           CustomTextField(
                             label: 'លេខគណនីធនាគារ',
-                            hint: '',
+                            hint: 'លេខគណនីធនាគារ',
                             icon: const Icon(Boxicons.bx_credit_card),
                             keyboardType: TextInputType.number,
                             lendingIcon: false,
@@ -796,7 +852,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
                         ],
                         CustomTextField(
                           label: 'ប្រាក់ខែគោល',
-                          hint: '',
+                          hint: 'ប្រាក់ខែគោល',
                           icon: const Icon(Boxicons.bx_credit_card),
                           keyboardType: TextInputType.number,
                           lendingIcon: false,
