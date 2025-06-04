@@ -1,11 +1,10 @@
 import 'package:boxicons/boxicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/model/section.dart';
-import 'package:hr/page/list_work.dart';
-import 'package:hr/widget/Button.dart';
-import 'package:hr/widget/TextField.dart';
+import 'package:HR/model/section.dart';
+import 'package:HR/page/list_work.dart';
+import 'package:HR/widget/Button.dart';
+import 'package:HR/widget/TextField.dart';
 
 class ListSection extends StatefulWidget {
   const ListSection({super.key});

@@ -1,6 +1,5 @@
 import 'package:boxicons/boxicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'detail_emp.dart';
@@ -26,9 +25,12 @@ class _MemberState extends State<Member> {
     if (query.isEmpty) {
       return baseQuery.get();
     } else {
-      return baseQuery
-          .where('fullname', isGreaterThanOrEqualTo: query)
-          .where('fullname', isLessThanOrEqualTo: '$query\uf8ff')
+      return FirebaseFirestore.instance
+          .collection('employees')
+          .where('adminname', isEqualTo: widget.adminName)
+          .orderBy('fullname')
+          .startAt([query])
+          .endAt(['$query\uf8ff'])
           .get();
     }
   }
@@ -63,16 +65,6 @@ class _MemberState extends State<Member> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextField(
-                  decoration: const InputDecoration(hintText: 'ស្វែងរកសមាជិក'),
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value;
-                    });
-                  },
-                  controller: _searchController,
-                ),
-                const SizedBox(height: 10),
                 FutureBuilder<QuerySnapshot>(
                   future: searchEmployees(_searchQuery),
                   builder: (context, snapshot) {

@@ -5,9 +5,9 @@ import 'dart:math';
 import 'package:boxicons/boxicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/model/adminaccount.dart';
-import 'package:hr/widget/Dropdownlist.dart';
-import 'package:hr/widget/TextField.dart';
+import 'package:HR/model/adminaccount.dart';
+import 'package:HR/widget/Dropdownlist.dart';
+import 'package:HR/widget/TextField.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddnewEmp extends StatefulWidget {

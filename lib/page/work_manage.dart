@@ -2,12 +2,10 @@
 
 import 'package:boxicons/boxicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/page/addnew_emp.dart';
-import 'package:hr/page/addnew_work.dart';
-import 'package:hr/page/detail_work.dart';
-import 'package:hr/page/list_section.dart';
+import 'package:HR/page/addnew_work.dart';
+import 'package:HR/page/detail_work.dart';
+import 'package:HR/page/list_section.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class WorkManage extends StatefulWidget {

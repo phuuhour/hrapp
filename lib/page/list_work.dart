@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/page/detail_work.dart';
+import 'package:HR/page/detail_work.dart';
 
 class ListWork extends StatefulWidget {
   const ListWork({super.key, required this.sectionTitle});

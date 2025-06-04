@@ -1,4 +1,4 @@
-name: hr
+name: HR
 description: "thesis at rule-25."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -46,6 +46,7 @@ dependencies:
   path: ^1.9.1
   firebase_storage: ^12.4.6
   shared_preferences: ^2.5.3
+  
 
    
   
@@ -60,13 +61,25 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
   flutter_native_splash: ^2.4.6
+  flutter_launcher_icons: ^0.14.3
+  rename_app: ^1.6.3
+
+
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/icon.png"
+
+
 
 flutter_native_splash:
   color: "#ffffff"
-  image: assets/images/splashimg.png
+  image: assets/icons/icon.png
 
   android_12:
-    image: assets/images/splashimg.png
+    image: assets/icons/icon.png
+    branding: assets/images/branding.png
 
 # The following section is specific to Flutter packages.
 flutter:

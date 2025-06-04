@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/screen/dashboradScreen.dart';
+import 'package:HR/screen/dashboradScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:hr/screen/loginScreen.dart';
-import 'package:hr/model/adminaccount.dart';
+import 'package:HR/screen/loginScreen.dart';
+import 'package:HR/model/adminaccount.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {

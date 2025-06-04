@@ -1,13 +1,12 @@
 // ignore_for_file: file_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/model/adminaccount.dart';
-import 'package:hr/page/employee_manage.dart';
-import 'package:hr/page/payroll_manage.dart';
-import 'package:hr/page/profileDetail.dart';
-import 'package:hr/page/work_manage.dart';
+import 'package:HR/model/adminaccount.dart';
+import 'package:HR/page/employee_manage.dart';
+import 'package:HR/page/payroll_manage.dart';
+import 'package:HR/page/profileDetail.dart';
+import 'package:HR/page/work_manage.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 

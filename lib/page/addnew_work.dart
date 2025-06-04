@@ -3,9 +3,9 @@
 import 'package:boxicons/boxicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/widget/Button.dart';
-import 'package:hr/widget/Dropdownlist.dart';
-import 'package:hr/widget/TextField.dart';
+import 'package:HR/widget/Button.dart';
+import 'package:HR/widget/Dropdownlist.dart';
+import 'package:HR/widget/TextField.dart';
 
 class AddNewWork extends StatefulWidget {
   const AddNewWork({super.key});

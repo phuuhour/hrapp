@@ -1,9 +1,8 @@
 import 'package:boxicons/boxicons.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hr/page/addnew_emp.dart';
-import 'package:hr/page/detail_emp.dart';
+import 'package:HR/page/addnew_emp.dart';
+import 'package:HR/page/detail_emp.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class EmployeeManage extends StatefulWidget {

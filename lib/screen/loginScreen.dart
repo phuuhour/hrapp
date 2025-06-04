@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hr/screen/dashboradScreen.dart';
-import 'package:hr/widget/Button.dart';
-import 'package:hr/widget/TextField.dart';
+import 'package:HR/screen/dashboradScreen.dart';
+import 'package:HR/widget/Button.dart';
+import 'package:HR/widget/TextField.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:boxicons/boxicons.dart';
-import 'package:hr/model/adminaccount.dart';
+import 'package:HR/model/adminaccount.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
