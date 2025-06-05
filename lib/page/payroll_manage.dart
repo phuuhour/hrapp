@@ -14,6 +14,7 @@ class PayrollManage extends StatefulWidget {
 }
 
 class _PayrollManageState extends State<PayrollManage> {
+  // Function to fetch total salary from Firestore
   Future<double> fetchTotalSalary() async {
     final QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('employees').get();
@@ -43,6 +44,7 @@ class _PayrollManageState extends State<PayrollManage> {
       0,
     );
 
+    // Format the dates
     String nextmonth = DateFormat(
       'dd MMM yyyy',
       'km',
@@ -192,6 +194,7 @@ class _PayrollManageState extends State<PayrollManage> {
                     ),
                     child: Column(
                       children: [
+                        // Displaying the list of employees
                         FutureBuilder<QuerySnapshot>(
                           future:
                               FirebaseFirestore.instance

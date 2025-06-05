@@ -16,9 +16,11 @@ class WorkManage extends StatefulWidget {
 }
 
 class _WorkManageState extends State<WorkManage> {
+  // Controller for the search field
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
+  // Function to search for employees based on the query
   Future<QuerySnapshot> searchEmployees(String query) {
     if (query.isEmpty) {
       return FirebaseFirestore.instance.collection('works').get();
@@ -155,6 +157,7 @@ class _WorkManageState extends State<WorkManage> {
               ),
             ),
             Expanded(
+              // Use RefreshIndicator to allow pull-to-refresh functionality
               child: RefreshIndicator(
                 strokeWidth: 2,
                 backgroundColor: Colors.white,
@@ -193,6 +196,7 @@ class _WorkManageState extends State<WorkManage> {
                             controller: _searchController,
                           ),
                           SizedBox(height: 10),
+                          // Displaying the list of works based on the search query
                           FutureBuilder<QuerySnapshot>(
                             future: searchEmployees(_searchQuery),
                             builder: (context, snapshot) {

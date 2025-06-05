@@ -15,7 +15,9 @@ class AddNewWork extends StatefulWidget {
 }
 
 class _AddNewWorkState extends State<AddNewWork> {
+  // Global key for the form
   final _formKey = GlobalKey<FormState>();
+  // State variables
   bool isLoading = false;
   bool isAddingSection = false;
 
@@ -38,6 +40,7 @@ class _AddNewWorkState extends State<AddNewWork> {
     super.dispose();
   }
 
+  // Function to add a new work
   void addWork() async {
     if (_formKey.currentState!.validate()) {
       final workId = _workIdController.text.trim();
@@ -152,6 +155,7 @@ class _AddNewWorkState extends State<AddNewWork> {
     }
   }
 
+  // Function to add a new section
   Future<void> addSection(String sectionName) async {
     try {
       await FirebaseFirestore.instance.collection('sections').add({

@@ -3,13 +3,14 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class ImageUploadService {
+  //GitHub repository details
   static const String repoOwner = 'phuuhour';
   static const String repoName = 'flutter_images';
-  // Replace with your valid token (store securely in production)
   static const String token = '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';
 
   static Future<String?> uploadImage(File imageFile) async {
     try {
+      // Check if the file is a valid image
       final fileName = 'profile_${DateTime.now().millisecondsSinceEpoch}.png';
       final bytes = await imageFile.readAsBytes();
       final base64Image = base64Encode(bytes);
@@ -18,7 +19,7 @@ class ImageUploadService {
       final repoUrl = Uri.parse(
         'https://api.github.com/repos/$repoOwner/$repoName',
       );
-
+      // Make a GET request to check if the repository is accessible
       final repoResponse = await http.get(
         repoUrl,
         headers: {
@@ -31,11 +32,12 @@ class ImageUploadService {
         throw Exception('Repository not found or inaccessible');
       }
 
-      // Upload image
+      // Upload image to github
       final uploadUrl = Uri.parse(
         'https://api.github.com/repos/$repoOwner/$repoName/contents/$fileName',
       );
 
+      // Prepare the request body
       final response = await http.put(
         uploadUrl,
         headers: {

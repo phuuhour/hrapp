@@ -13,9 +13,11 @@ class EmployeeManage extends StatefulWidget {
 }
 
 class _EmployeeManageState extends State<EmployeeManage> {
+  // Controller for the search text field
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
+  // Function to search employees by name
   Future<QuerySnapshot> searchEmployees(String query) {
     if (query.isEmpty) {
       return FirebaseFirestore.instance.collection('employees').get();
@@ -29,6 +31,7 @@ class _EmployeeManageState extends State<EmployeeManage> {
 
   @override
   Widget build(BuildContext context) {
+    // Initialize date formatting for Khmer locale
     initializeDateFormatting('km', null);
     return Scaffold(
       backgroundColor: Color.fromARGB(245, 250, 250, 250),

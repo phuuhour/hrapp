@@ -14,27 +14,6 @@ class Member extends StatefulWidget {
 }
 
 class _MemberState extends State<Member> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
-
-  Future<QuerySnapshot> searchEmployees(String query) {
-    final baseQuery = FirebaseFirestore.instance
-        .collection('employees')
-        .where('adminname', isEqualTo: widget.adminName);
-
-    if (query.isEmpty) {
-      return baseQuery.get();
-    } else {
-      return FirebaseFirestore.instance
-          .collection('employees')
-          .where('adminname', isEqualTo: widget.adminName)
-          .orderBy('fullname')
-          .startAt([query])
-          .endAt(['$query\uf8ff'])
-          .get();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,8 +44,13 @@ class _MemberState extends State<Member> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FutureBuilder<QuerySnapshot>(
-                  future: searchEmployees(_searchQuery),
+                // Displaying the member by adminname
+                StreamBuilder<QuerySnapshot>(
+                  stream:
+                      FirebaseFirestore.instance
+                          .collection('employees')
+                          .where('adminname', isEqualTo: widget.adminName)
+                          .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
@@ -88,13 +72,7 @@ class _MemberState extends State<Member> {
                       final employees = snapshot.data?.docs ?? [];
 
                       if (employees.isEmpty) {
-                        return Center(
-                          child: Text(
-                            _searchQuery.isEmpty
-                                ? 'គ្មានសមាជិកក្រុមទេ'
-                                : 'រកមិនឃើញ',
-                          ),
-                        );
+                        return const Center(child: Text('គ្មានសមាជិកក្រុមទេ'));
                       }
 
                       return Column(

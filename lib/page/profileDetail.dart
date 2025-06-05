@@ -20,6 +20,7 @@ class ProfileDetail extends StatefulWidget {
 }
 
 class _ProfileDetailState extends State<ProfileDetail> {
+  // State variables
   int? memberCount;
   XFile? _pickedImage;
   bool _isUploading = false;
@@ -30,6 +31,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
     fetchMemberCount();
   }
 
+  // Fetch the count of members associated with the admin
   Future<void> fetchMemberCount() async {
     try {
       final querySnapshot =
@@ -48,11 +50,13 @@ class _ProfileDetailState extends State<ProfileDetail> {
     }
   }
 
+  // Function to pick an image from the gallery
   Future<XFile?> pickImage() async {
     final ImagePicker picker = ImagePicker();
     return await picker.pickImage(source: ImageSource.gallery);
   }
 
+  // Function to handle image upload
   Future<void> handleImageUpload() async {
     final picked = await pickImage();
     if (picked == null) return;
@@ -128,6 +132,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
     }
   }
 
+  // Function to get the profile image
   ImageProvider _getProfileImage() {
     if (_pickedImage != null) {
       return FileImage(File(_pickedImage!.path));
@@ -239,10 +244,10 @@ class _ProfileDetailState extends State<ProfileDetail> {
                         const SizedBox(height: 15),
                         TextButton(
                           onPressed: () async {
+                            // Clear all stored data and navigate to login screen
                             try {
                               final prefs =
                                   await SharedPreferences.getInstance();
-                              // Clear ALL stored data including remember me credentials
                               await prefs.clear();
 
                               Navigator.of(context).pushAndRemoveUntil(

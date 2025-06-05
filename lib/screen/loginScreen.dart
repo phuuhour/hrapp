@@ -15,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // State variables
   bool isLoading = false;
   bool rememberMe = false;
   final TextEditingController phoneController = TextEditingController();
@@ -26,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _loadSavedCredentials();
   }
 
+  // Load saved credentials from SharedPreferences
   Future<void> _loadSavedCredentials() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -37,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  // Show error dialog
   void showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -133,6 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   isLoading: isLoading,
                   text: 'ចូលគណនី',
                   onPressed: () async {
+                    // Validate input and perform login
                     setState(() {
                       isLoading = true;
                     });
@@ -160,11 +164,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         final adminData = AdminAccount.fromMap(
                           querySnapshot.docs.first.data(),
                         );
-
+                        // Save admin data to SharedPreferences
                         final prefs = await SharedPreferences.getInstance();
                         await prefs.setString('adminPhone', adminData.phone);
                         await prefs.setBool('isLoggedIn', true);
-
+                        // Save credentials if rememberMe is true
                         if (rememberMe) {
                           await prefs.setString('savedPhone', phone);
                           await prefs.setString('savedPassword', password);

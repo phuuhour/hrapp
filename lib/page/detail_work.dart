@@ -14,6 +14,7 @@ class DetailWork extends StatefulWidget {
 }
 
 class _DetailWorkState extends State<DetailWork> {
+  // Function to delete work by ID
   void deleteWorkById(String workId) {
     FirebaseFirestore.instance
         .collection('works')

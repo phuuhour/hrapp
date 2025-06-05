@@ -18,8 +18,11 @@ class AddnewEmp extends StatefulWidget {
 }
 
 class _AddnewEmpState extends State<AddnewEmp> {
+  // Global Key for the Form
   final _formKey = GlobalKey<FormState>();
+  // Loading state
   bool isLoading = false;
+  // Current step in the form
   int currentStep = 0;
 
   // Controllers
@@ -41,6 +44,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
   final TextEditingController _branch = TextEditingController();
   final TextEditingController _section = TextEditingController();
 
+  // Lists for dropdown items
   List<String> existingEmpIds = [];
   List<String> empIdItems = [];
   List<String> sectionItems = [];
@@ -57,7 +61,9 @@ class _AddnewEmpState extends State<AddnewEmp> {
     _loadCurrentAdmin();
   }
 
+  // Load current admin from SharedPreferences
   void _loadCurrentAdmin() async {
+    // Get the admin phone number from SharedPreferences
     final prefs = await SharedPreferences.getInstance();
     final adminPhone = prefs.getString('adminPhone');
 
@@ -90,11 +96,12 @@ class _AddnewEmpState extends State<AddnewEmp> {
   //   });
   // }
 
+  // Load sections based on selected branch
   void _loadSectionsForBranch() async {
     if (_branch.text.isEmpty) {
       setState(() {
-        sectionItems = ['សូមជ្រើសរើសសាខាជាមុនសិន']; // Default hint
-        workNameItems = ['សូមជ្រើសរើសផ្នែកជាមុនសិន']; // Reset workNames
+        sectionItems = ['សូមជ្រើសរើសសាខាជាមុនសិន'];
+        workNameItems = ['សូមជ្រើសរើសផ្នែកជាមុនសិន'];
       });
       return;
     }
@@ -119,6 +126,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
     });
   }
 
+  // Load work names based on selected branch and section
   void _loadWorkNamesForSection() async {
     if (_branch.text.isEmpty || _section.text.isEmpty) {
       setState(() {
@@ -147,6 +155,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
     });
   }
 
+  // Generate employee ID based on work ID
   void _generateEmpIdBasedOnWorkId() async {
     if (_workId.text.trim().isEmpty ||
         _branch.text.isEmpty ||
@@ -174,6 +183,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
     }
   }
 
+  // Generate a unique employee ID
   String generateEmpId(String workId, List<String> existingIds) {
     String newId;
     Random random = Random();
@@ -194,6 +204,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
     return newId;
   }
 
+  // Dispose of controllers
   @override
   void dispose() {
     _empId.dispose();
@@ -216,6 +227,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
     super.dispose();
   }
 
+  // Function to add a new employee
   void addEmployee() async {
     if (_formKey.currentState!.validate()) {
       // Validate all required fields
@@ -307,8 +319,8 @@ class _AddnewEmpState extends State<AddnewEmp> {
         isLoading = true;
       });
 
+      // Try to add the employee data to Firestore
       try {
-        // Parse dates first to ensure they're valid
         final dobDate = DateTime.parse(_dob.text.trim());
         final startDate = DateTime.parse(_startDate.text.trim());
 
@@ -420,6 +432,7 @@ class _AddnewEmpState extends State<AddnewEmp> {
       ),
       body: SafeArea(
         child: Form(
+          // Use the global key for the form
           key: _formKey,
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(10),

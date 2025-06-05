@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Firebase
   await Firebase.initializeApp();
 
   // Check login status
@@ -21,6 +22,7 @@ void main() async {
       theme: ThemeData(fontFamily: 'Kh Siemreap'),
       debugShowCheckedModeBanner: false,
       home:
+          // If the user is logged in and has chosen to remember their credentials,
           isLoggedIn && rememberMe
               ? FutureBuilder<AdminAccount?>(
                 future: _getAdminData(prefs),
@@ -46,6 +48,7 @@ void main() async {
   );
 }
 
+//// Function to retrieve admin data from Firestore
 Future<AdminAccount?> _getAdminData(SharedPreferences prefs) async {
   try {
     final phone = prefs.getString('adminPhone');

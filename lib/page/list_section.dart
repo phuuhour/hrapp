@@ -14,10 +14,12 @@ class ListSection extends StatefulWidget {
 }
 
 class _ListSectionState extends State<ListSection> {
+  // State variables
   bool isLoading = false;
   bool isAddingSection = false;
   final TextEditingController _sectionController = TextEditingController();
 
+  // Function to get section counts
   Future<Map<String, int>> getSectionCount() async {
     final snapshot =
         await FirebaseFirestore.instance.collection('sections').get();
@@ -30,6 +32,7 @@ class _ListSectionState extends State<ListSection> {
     return sectionCounts;
   }
 
+  // Function to get all section names
   Future<List<String>> getAllSections() async {
     final snapshot =
         await FirebaseFirestore.instance.collection('sections').get();
@@ -38,6 +41,7 @@ class _ListSectionState extends State<ListSection> {
         .toList();
   }
 
+  // Function to add a new section
   Future<void> addSection(String sectionName) async {
     try {
       await FirebaseFirestore.instance.collection('sections').add({
@@ -411,6 +415,7 @@ class _ListSectionState extends State<ListSection> {
                           },
                         ),
                         const Divider(),
+                        // Display all sections with their work counts
                         FutureBuilder<QuerySnapshot>(
                           future:
                               FirebaseFirestore.instance
@@ -500,7 +505,7 @@ class _ListSectionState extends State<ListSection> {
                                         allSections.add(section);
                                       }
                                     }
-
+                                    // Sort sections alphabetically
                                     final sectionListTiles =
                                         allSections.map((section) {
                                           final workNames =

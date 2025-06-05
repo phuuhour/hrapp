@@ -17,6 +17,7 @@ class DetailEmp extends StatefulWidget {
 }
 
 class _DetailEmpState extends State<DetailEmp> {
+  // Fetch employee data from Firestore
   Future<EmpData?> fetchEmployeeData() async {
     try {
       final doc =
@@ -34,6 +35,7 @@ class _DetailEmpState extends State<DetailEmp> {
     }
   }
 
+  // Delete employee by ID
   Future<void> deleteEmpById({
     required String empId,
     required BuildContext context,
@@ -209,7 +211,6 @@ class _DetailEmpState extends State<DetailEmp> {
                                 child: Text('មិនមានទិន្នន័យបុគ្គលិក'),
                               );
                             }
-
                             final empData = snapshot.data!;
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.center,

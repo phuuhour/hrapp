@@ -35,6 +35,7 @@ class CustomTextField extends StatefulWidget {
 class _CustomTextFieldState extends State<CustomTextField> {
   bool _obscureText = true;
 
+  // Function to select a date
   Future<void> _selectDate(BuildContext context, DateTime selectedDate) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,

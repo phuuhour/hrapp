@@ -20,6 +20,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  // Function to get employee count
   Future<Map<String, int>> getEmpCount() async {
     final QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('employees').get();
@@ -35,6 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return empCount;
   }
 
+  // Function to get work name count
   Future<Map<String, int>> getWorkNameCount() async {
     final QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('works').get();
@@ -126,6 +128,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(10),
+          // Main content of the dashboard
           child: RefreshIndicator(
             strokeWidth: 2,
             backgroundColor: Colors.white,
